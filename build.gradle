@@ -126,13 +126,13 @@ uploadArchives {
 
                         scm {
                             url 'https://github.com/cpw/CompactSolars'
-                            connection 'scm:git:git://github.com/cpw/CompactSolars.git'
-                            developerConnection 'scm:git:git@github.com:cpw/CompactSolars.git'
+                            connection 'scm:git:git://github.com/progwml6/CompactSolars.git'
+                            developerConnection 'scm:git:git@github.com:progwml6/CompactSolars.git'
                         }
 
                         issueManagement {
                             system 'github'
-                            url 'https://github.com/cpw/CompactSolars/issues'
+                            url 'https://github.com/progwml6/CompactSolars/issues'
                         }
 
                         licenses {
