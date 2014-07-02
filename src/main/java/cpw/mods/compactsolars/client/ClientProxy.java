@@ -13,7 +13,6 @@ package cpw.mods.compactsolars.client;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import cpw.mods.compactsolars.CommonProxy;
 import cpw.mods.compactsolars.TileEntityCompactSolar;
 
