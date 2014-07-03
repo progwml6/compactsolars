@@ -1,0 +1,7 @@
+tile.compactsolars:HV_block.name=Pannello solare ad alto voltaggio
+tile.compactsolars:MV_block.name=Pannello solare a medio voltaggio
+tile.compactsolars:LV_block.name=Pannello solare a basso voltaggio
+
+item.compactsolars:solarHatHV.name=Elmo solare ad alto voltaggio
+item.compactsolars:solarHatMV.name=Elmo solare a medio voltaggio
+item.compactsolars:solarHatLV.name=Elmo solare a basso voltaggio
