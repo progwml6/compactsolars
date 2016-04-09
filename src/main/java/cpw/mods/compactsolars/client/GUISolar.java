@@ -10,22 +10,21 @@
  ******************************************************************************/
 package cpw.mods.compactsolars.client;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.compactsolars.CompactSolarType;
 import cpw.mods.compactsolars.ContainerCompactSolar;
 import cpw.mods.compactsolars.TileEntityCompactSolar;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.util.ResourceLocation;
 
 public class GUISolar extends GuiContainer {
     public static final ResourceLocation gui = new ResourceLocation("ic2", "textures/gui/GUISolarGenerator.png");
 
     public enum GUI {
-        LV(CompactSolarType.LV), MV(CompactSolarType.MV), HV(CompactSolarType.HV);
+        LV(CompactSolarType.LOW_VOLTAGE), MV(CompactSolarType.MEDIUM_VOLTAGE), HV(CompactSolarType.HIGH_VOLTAGE);
 
         private CompactSolarType mainType;
 
@@ -37,7 +36,8 @@ public class GUISolar extends GuiContainer {
             return new ContainerCompactSolar(player, solarTile, mainType);
         }
 
-        public static GUISolar buildGUI(CompactSolarType type, IInventory playerInventory, TileEntityCompactSolar solarTile) {
+        public static GUISolar buildGUI(CompactSolarType type, IInventory playerInventory,
+                TileEntityCompactSolar solarTile) {
             for (GUI gui : values()) {
                 if (solarTile.getType() == gui.mainType) {
                     return new GUISolar(gui, playerInventory, solarTile);

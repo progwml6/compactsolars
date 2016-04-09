@@ -11,14 +11,18 @@
 package cpw.mods.compactsolars;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlockWithMetadata;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemCompactSolar extends ItemBlockWithMetadata {
+public class ItemCompactSolar extends ItemBlock {
+
     public ItemCompactSolar(Block b) {
-        super(b, CompactSolars.compactSolarBlock);
+        super(CompactSolars.compactSolarBlock);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
     }
 
+    @Override
     public int getMetadata(int i) {
         if (i < CompactSolarType.values().length) {
             return i;

@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_bottom_top",
+	"textures": {
+		"side": "compactsolars:blocks/high_voltage_sides",
+		"bottom": "compactsolars:blocks/high_voltage_bottom",
+		"top": "compactsolars:blocks/high_voltage_top"
+	}
+}

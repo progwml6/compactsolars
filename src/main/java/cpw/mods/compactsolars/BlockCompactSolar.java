@@ -13,10 +13,12 @@ package cpw.mods.compactsolars;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,97 +26,101 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockCompactSolar extends BlockContainer {
+public class BlockCompactSolar extends BlockContainer
+{
+    public static final PropertyEnum<CompactSolarType> TYPE_PROP = PropertyEnum.create("type", CompactSolarType.class);
+
     private Random random;
-    @SideOnly(Side.CLIENT)
-    private IIcon[][] textures;
 
-    public BlockCompactSolar() {
+    public BlockCompactSolar()
+    {
         super(Material.iron);
-        setBlockName("CompactSolar");
+        setUnlocalizedName("CompactSolar");
         setHardness(3.0F);
         random = new Random();
         setCreativeTab(CreativeTabs.tabRedstone);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE_PROP, CompactSolarType.LOW_VOLTAGE));
     }
 
     @Override
-    public TileEntity createNewTileEntity(World var1, int i) {
-        return null;
-    }
-
-    @Override
-    public TileEntity createTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(World world, int metadata)
+    {
         return CompactSolarType.makeEntity(metadata);
     }
 
     @Override
-    public IIcon getIcon(int i, int j) {
-        if (j >= CompactSolarType.values().length) {
-            return null;
-        } else {
-            return textures[j][i > 2 ? 2 : i];
-        }
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer player, int s, float f1, float f2, float f3) {
-        if (player.isSneaking()) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        if (playerIn.isSneaking())
+        {
             return false;
         }
 
-        if (world.isRemote) {
+        if (worldIn.isRemote)
+        {
             return true;
         }
 
-        TileEntity te = world.getTileEntity(i, j, k);
-        if (te != null && te instanceof TileEntityCompactSolar) {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (te != null && te instanceof TileEntityCompactSolar)
+        {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
-            player.openGui(CompactSolars.instance, tecs.getType().ordinal(), world, i, j, k);
+            playerIn.openGui(CompactSolars.instance, tecs.getType().ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
         return true;
     }
 
     @Override
-    public int damageDropped(int i) {
-        return i;
+    public int damageDropped(IBlockState state)
+    {
+        return CompactSolarType.validateMeta(state.getValue(TYPE_PROP).ordinal());
     }
 
     @Override
-    public void breakBlock(World world, int i, int j, int k, Block par5, int par6) {
-        TileEntityCompactSolar tileSolar = (TileEntityCompactSolar) world.getTileEntity(i, j, k);
-        if (tileSolar != null) {
+    public void breakBlock(World world, BlockPos pos, IBlockState state)
+    {
+        TileEntityCompactSolar tileSolar = (TileEntityCompactSolar) world.getTileEntity(pos);
+        if (tileSolar != null)
+        {
             dropContent(0, tileSolar, world);
         }
-        super.breakBlock(world, i, j, k, par5, par6);
+        super.breakBlock(world, pos, state);
     }
 
-    public void dropContent(int newSize, TileEntityCompactSolar tileSolar, World world) {
-        for (int l = newSize; l < tileSolar.getSizeInventory(); l++) {
+    public void dropContent(int newSize, TileEntityCompactSolar tileSolar, World world)
+    {
+        for (int l = newSize; l < tileSolar.getSizeInventory(); l++)
+        {
             ItemStack itemstack = tileSolar.getStackInSlot(l);
-            if (itemstack == null) {
+            if (itemstack == null)
+            {
                 continue;
             }
             float f = random.nextFloat() * 0.8F + 0.1F;
             float f1 = random.nextFloat() * 0.8F + 0.1F;
             float f2 = random.nextFloat() * 0.8F + 0.1F;
-            while (itemstack.stackSize > 0) {
+            while (itemstack.stackSize > 0)
+            {
                 int i1 = random.nextInt(21) + 10;
-                if (i1 > itemstack.stackSize) {
+                if (i1 > itemstack.stackSize)
+                {
                     i1 = itemstack.stackSize;
                 }
                 itemstack.stackSize -= i1;
-                EntityItem entityitem = new EntityItem(world, (float) tileSolar.xCoord + f, (float) tileSolar.yCoord + (newSize > 0 ? 1 : 0) + f1, (float) tileSolar.zCoord + f2, new ItemStack(
-                        itemstack.getItem(), i1, itemstack.getItemDamage()));
+                EntityItem entityitem = new EntityItem(world, tileSolar.getPos().getX() + f, (float) tileSolar.getPos().getY() + (newSize > 0 ? 1 : 0) + f1,
+                        tileSolar.getPos().getZ() + f2, new ItemStack(itemstack.getItem(), i1, itemstack.getItemDamage()));
                 float f3 = 0.05F;
                 entityitem.motionX = (float) random.nextGaussian() * f3;
                 entityitem.motionY = (float) random.nextGaussian() * f3 + 0.2F;
                 entityitem.motionZ = (float) random.nextGaussian() * f3;
-                if (itemstack.hasTagCompound()) {
+                if (itemstack.hasTagCompound())
+                {
                     entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
                 }
                 world.spawnEntityInWorld(entityitem);
@@ -125,23 +131,30 @@ public class BlockCompactSolar extends BlockContainer {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List itemList) {
-        for (CompactSolarType type : CompactSolarType.values()) {
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List itemList)
+    {
+        for (CompactSolarType type : CompactSolarType.values())
+        {
             itemList.add(new ItemStack(this, 1, type.ordinal()));
         }
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IconRegister) {
-        textures = new IIcon[CompactSolarType.values().length][3];
-        for (CompactSolarType typ : CompactSolarType.values()) {
-            for (int i = 0; i < 3; i++) {
-                String side = i == 0 ? "Bottom" : i == 1 ? "Top" : "Side";
-                String texName = String.format("compactsolars:%s%s", typ.name().toLowerCase(), side);
-                textures[typ.ordinal()][i] = par1IconRegister.registerIcon(texName);
-            }
-        }
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(TYPE_PROP, CompactSolarType.values()[meta]);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState blockState)
+    {
+        return blockState.getValue(TYPE_PROP).ordinal();
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty<?>[] { TYPE_PROP });
     }
 
 }

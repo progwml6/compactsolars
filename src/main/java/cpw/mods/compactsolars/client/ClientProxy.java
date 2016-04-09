@@ -10,11 +10,12 @@
  ******************************************************************************/
 package cpw.mods.compactsolars.client;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import cpw.mods.compactsolars.CommonProxy;
 import cpw.mods.compactsolars.TileEntityCompactSolar;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
 public class ClientProxy extends CommonProxy {
     @Override
@@ -28,7 +29,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z) {
-        TileEntity te = world.getTileEntity(X, Y, Z);
+        TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));
         if (te != null && te instanceof TileEntityCompactSolar) {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
             return GUISolar.GUI.buildGUI(tecs.getType(), player.inventory, tecs);

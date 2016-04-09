@@ -10,19 +10,20 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
+import com.google.common.base.Throwables;
+
 import ic2.api.item.IC2Items;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
-public enum CompactSolarType {
-    LV(8, 32, "Low Voltage Solar Array", "lvTransformer", TileEntityCompactSolar.class, "lvHat"), MV(64, 128, "Medium Voltage Solar Array", "mvTransformer", TileEntityCompactSolarMV.class, "mvHat"), HV(
-            512, 512, "High Voltage Solar Array", "hvTransformer", TileEntityCompactSolarHV.class, "hvHat");
+public enum CompactSolarType implements IStringSerializable {
+    LOW_VOLTAGE(8, 32, "Low Voltage Solar Array", "lv_transformer", TileEntityCompactSolar.class, "lvHat"),
+    MEDIUM_VOLTAGE(64, 128, "Medium Voltage Solar Array", "mv_transformer", TileEntityCompactSolarMV.class, "mvHat"),
+    HIGH_VOLTAGE(512, 512, "High Voltage Solar Array", "hv_transformer", TileEntityCompactSolarHV.class, "hvHat");
 
     private int output;
     public Class<? extends TileEntityCompactSolar> clazz;
@@ -41,18 +42,18 @@ public enum CompactSolarType {
         this.friendlyName = friendlyName;
         this.transformerName = transformerName;
         this.clazz = clazz;
-        this.hatName = "solarHat" + name();
+        this.hatName = "solar_hat_" + name().toLowerCase();
         this.hatTexture = new ResourceLocation("compactsolars", "textures/armor/" + hatTexture + ".png");
         this.hatItemTexture = new ResourceLocation("compactsolars", hatTexture);
         this.maxStorage = outputPacketSize << 1;
     }
 
     public static void generateRecipes(BlockCompactSolar block) {
-        ItemStack solar = IC2Items.getItem("solarPanel");
+        ItemStack solar = IC2Items.getItem("te", "solar_generator");
         ItemStack parent = solar;
         for (CompactSolarType typ : values()) {
             ItemStack targ = new ItemStack(block, 1, typ.ordinal());
-            ItemStack transformer = IC2Items.getItem(typ.transformerName);
+            ItemStack transformer = IC2Items.getItem("te", typ.transformerName);
             addRecipe(targ, "SSS", "SXS", "SSS", 'S', parent, 'X', transformer);
             parent = targ;
         }
@@ -85,7 +86,7 @@ public enum CompactSolarType {
     }
 
     public ItemSolarHat buildHat() {
-        //hatName
+        // hatName
         item = new ItemSolarHat(this);
         GameRegistry.registerItem(item, hatName);
         return item;
@@ -103,5 +104,18 @@ public enum CompactSolarType {
             ItemStack solarBlock = new ItemStack(block, 0, typ.ordinal());
             GameRegistry.addShapelessRecipe(new ItemStack(typ.item), solarBlock, ironHat);
         }
+    }
+
+    public static int validateMeta(int i) {
+        if (i < values().length) {
+            return i;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public String getName() {
+        return name().toLowerCase();
     }
 }

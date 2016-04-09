@@ -1,12 +1,13 @@
 package cpw.mods.compactsolars;
 
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-
 import java.util.Map;
 import java.util.Random;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import com.google.common.collect.MapMaker;
+import com.google.common.math.IntMath;
+
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,16 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.ISpecialArmor;
-
-import com.google.common.collect.MapMaker;
-import com.google.common.math.IntMath;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.EnumHelper;
 
 public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
     private class PlayerState {
@@ -38,7 +32,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
     private CompactSolarType type;
 
     public ItemSolarHat(CompactSolarType type) {
-        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", 1, new int[] { 1, 1, 1, 1 }, 1), 0, 0);
+        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1), 0, 0);
         this.type = type;
         setUnlocalizedName("compactsolars:" + type.hatName);
     }
@@ -51,15 +45,13 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
     @Override
     public void onArmorTick(World worldObj, EntityPlayer player, ItemStack itemStack) {
         // client side or no sky: no charge
-        if (worldObj.isRemote || worldObj.provider.hasNoSky) {
+        if (worldObj.isRemote || worldObj.provider.getHasNoSky()) {
             return;
         }
         // productionrate is set, and the tick is not zero : no charge
         if (CompactSolars.productionRate != 1 && random.nextInt(CompactSolars.productionRate) != 0) {
             return;
         }
-        int xCoord = MathHelper.floor_double(player.posX);
-        int zCoord = MathHelper.floor_double(player.posZ);
 
         boolean isRaining = false;
         if (!this.playerState.containsKey(player)) {
@@ -67,11 +59,11 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
         }
         PlayerState state = playerState.get(player);
         if (worldObj.getTotalWorldTime() % 20 == 0) {
-            boolean canRain = worldObj.getWorldChunkManager().getBiomeGenAt(xCoord, zCoord).getIntRainfall() > 0;
+            boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getWorldChunkManager()).getIntRainfall() > 0;
             state.canRain = canRain;
         }
         isRaining = state.canRain && (worldObj.isRaining() || worldObj.isThundering());
-        boolean theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canBlockSeeTheSky(xCoord, MathHelper.floor_double(player.posY) + 1, zCoord);
+        boolean theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(player.getPosition().up());
 
         if (!theSunIsVisible) {
             return;
@@ -120,11 +112,5 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
     @Override
     public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
         return;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(type.hatItemTexture.toString());
     }
 }

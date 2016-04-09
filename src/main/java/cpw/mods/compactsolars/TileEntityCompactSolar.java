@@ -10,20 +10,30 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
-import ic2.api.item.IElectricItem;
-import ic2.api.tile.IWrenchable;
-import ic2.api.energy.prefab.BasicSource;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
+import ic2.api.energy.prefab.BasicSource;
+import ic2.api.item.IElectricItem;
+import ic2.api.tile.IWrenchable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-public class TileEntityCompactSolar extends TileEntity implements IInventory, IWrenchable {
+public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable {
     private BasicSource energySource;
     private static Random random = new Random();
     private CompactSolarType type;
@@ -35,7 +45,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
     private boolean noSunlight;
 
     public TileEntityCompactSolar() {
-        this(CompactSolarType.LV);
+        this(CompactSolarType.LOW_VOLTAGE);
     }
 
     public TileEntityCompactSolar(CompactSolarType type) {
@@ -47,11 +57,11 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
     }
 
     @Override
-    public void updateEntity() {
-        energySource.onUpdateEntity();
+    public void update() {
+        energySource.update();
         if (!initialized && worldObj != null) {
-            canRain = worldObj.getWorldChunkManager().getBiomeGenAt(xCoord, zCoord).getIntRainfall() > 0;
-            noSunlight = worldObj.provider.hasNoSky;
+            canRain = worldObj.getChunkFromBlockCoords(pos).getBiome(pos, worldObj.getWorldChunkManager()).getIntRainfall() > 0;
+            noSunlight = worldObj.provider.getHasNoSky();
             initialized = true;
         }
         if (noSunlight) {
@@ -67,7 +77,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
             energyProduction = generateEnergy();
         }
         energySource.addEnergy(energyProduction);
-        
+
         if (inventory[0] != null && (inventory[0].getItem() instanceof IElectricItem)) {
             energySource.charge(inventory[0]);
         }
@@ -75,7 +85,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
 
     private void updateSunState() {
         boolean isRaining = canRain && (worldObj.isRaining() || worldObj.isThundering());
-        theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord);
+        theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(pos.up());
     }
 
     private int generateEnergy() {
@@ -126,7 +136,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return type.name();
     }
 
@@ -140,45 +150,41 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
         if (worldObj == null) {
             return true;
         }
-        if (worldObj.getTileEntity(xCoord, yCoord, zCoord) != this) {
+        if (worldObj.getTileEntity(pos) != this) {
             return false;
         }
-        return entityplayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
+        return entityplayer.getDistanceSq(this.pos.getZ() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64D;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
         // NOOP
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
         // NOOP
 
     }
 
     @Override
-    public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
+    public EnumFacing getFacing(World world, BlockPos pos) {
+        return EnumFacing.VALUES[0];
+    }
+
+    @Override
+    public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
         return false;
     }
 
     @Override
-    public short getFacing() {
-        return 0;
-    }
-
-    @Override
-    public void setFacing(short facing) {
-    }
-
-    @Override
-    public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
+    public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
         return true;
     }
 
     @Override
-    public float getWrenchDropRate() {
-        return 1.0F;
+    public double getWrenchSuccessRate(World world, BlockPos pos) {
+        return 1.0D;
     }
 
     @Override
@@ -205,7 +211,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_LIST);
         inventory = new ItemStack[getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.getCompoundTagAt(i);
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 0xff;
             if (j >= 0 && j < inventory.length) {
                 inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
@@ -229,7 +235,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int var1) {
+    public ItemStack removeStackFromSlot(int var1) {
         if (this.inventory[var1] != null) {
             ItemStack var2 = this.inventory[var1];
             this.inventory[var1] = null;
@@ -240,12 +246,19 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
     }
 
     @Override
-    public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-        return new ItemStack(CompactSolars.compactSolarBlock, 1, getType().ordinal());
+    public void clear() {
+        for (int i = 0; i < this.inventory.length; ++i) {
+            this.inventory[i] = null;
+        }
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, List<ItemStack> originalDrops) {
+        return Arrays.asList(new ItemStack[] { new ItemStack(CompactSolars.compactSolarBlock, 1, getType().ordinal()) });
+    }
+
+    @Override
+    public boolean hasCustomName() {
         return false;
     }
 
@@ -254,5 +267,23 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IW
         return itemstack != null && itemstack.getItem() instanceof IElectricItem;
     }
 
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public IChatComponent getDisplayName() {
+        return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]);
+    }
 
 }

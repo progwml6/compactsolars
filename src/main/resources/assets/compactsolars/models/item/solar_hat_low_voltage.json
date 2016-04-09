@@ -1,0 +1,6 @@
+{
+	"parent": "compactsolars:item/default",
+	"textures": {
+		"layer0": "compactsolars:items/solar_hat_low_voltage"
+	}
+}

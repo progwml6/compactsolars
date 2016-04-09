@@ -12,31 +12,40 @@ package cpw.mods.compactsolars;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class CommonProxy implements IGuiHandler {
-    public void registerTileEntityRenderers() {
+public class CommonProxy implements IGuiHandler
+{
+    public void registerTileEntityRenderers()
+    {
         // NOOP for now
     }
 
-    public void registerRenderInformation() {
+    public void registerRenderInformation()
+    {
         // NOOP on server
     }
 
     @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z) {
-        TileEntity te = world.getTileEntity(X, Y, Z);
-        if (te != null && te instanceof TileEntityCompactSolar) {
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
+    {
+        TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));
+        if (te != null && te instanceof TileEntityCompactSolar)
+        {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
             return new ContainerCompactSolar(player.inventory, tecs, tecs.getType());
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z) {
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
+    {
         return null;
     }
 }
