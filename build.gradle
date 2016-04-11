@@ -63,8 +63,8 @@ minecraft {
 }
 
 dependencies {
-    //deobfCompile 'net.industrial-craft:industrialcraft-2:2.3.180-ex18'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'net.industrial-craft:industrialcraft-2:2.3.184-ex18:dev'
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 // This wrangles the resources for the jar files- stuff like textures and languages
