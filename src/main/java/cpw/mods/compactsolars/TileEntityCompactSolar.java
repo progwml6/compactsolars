@@ -183,11 +183,6 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public double getWrenchSuccessRate(World world, BlockPos pos) {
-        return 1.0D;
-    }
-
-    @Override
     public void writeToNBT(NBTTagCompound nbttagcompound) {
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
@@ -253,7 +248,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, List<ItemStack> originalDrops) {
+    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
         return Arrays.asList(new ItemStack[] { new ItemStack(CompactSolars.compactSolarBlock, 1, getType().ordinal()) });
     }
 

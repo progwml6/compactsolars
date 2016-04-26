@@ -11,15 +11,13 @@
 package cpw.mods.compactsolars;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
 
-public class ItemCompactSolar extends ItemBlock {
+public class ItemCompactSolar extends ItemColored {
 
     public ItemCompactSolar(Block b) {
-        super(CompactSolars.compactSolarBlock);
-        this.setMaxDamage(0);
-        this.setHasSubtypes(true);
+        super(b, true);
     }
 
     @Override

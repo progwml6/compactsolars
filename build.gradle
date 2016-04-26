@@ -63,7 +63,7 @@ minecraft {
 }
 
 dependencies {
-    compile 'net.industrial-craft:industrialcraft-2:2.3.184-ex18:dev'
+    compile 'net.industrial-craft:industrialcraft-2:2.3.234-ex18:dev'
     //compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
