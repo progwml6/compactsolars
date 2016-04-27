@@ -10,8 +10,10 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
-public class TileEntityCompactSolarHV extends TileEntityCompactSolar {
-    public TileEntityCompactSolarHV() {
+public class TileEntityCompactSolarHV extends TileEntityCompactSolar
+{
+    public TileEntityCompactSolarHV()
+    {
         super(CompactSolarType.HIGH_VOLTAGE);
     }
 }

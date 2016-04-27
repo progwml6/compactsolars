@@ -1,8 +1,12 @@
 {
-   "parent": "block/cube_bottom_top",
-   "textures": {
-      "side": "compactsolars:blocks/high_voltage_sides",
-      "bottom": "compactsolars:blocks/high_voltage_bottom",
-      "top": "compactsolars:blocks/high_voltage_top"
-   }
+	"parent": "block/cube",
+	"textures": {
+		"particle": "compactsolars:blocks/high_voltage_sides",
+		"down": "compactsolars:blocks/high_voltage_bottom",
+		"up": "compactsolars:blocks/high_voltage_top",
+		"north": "compactsolars:blocks/high_voltage_sides",
+		"east": "compactsolars:blocks/high_voltage_sides",
+		"south": "compactsolars:blocks/high_voltage_sides",
+		"west": "compactsolars:blocks/high_voltage_sides"
+	}
 }

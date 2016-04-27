@@ -14,23 +14,30 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
 
-public class ItemCompactSolar extends ItemColored {
+public class ItemCompactSolar extends ItemColored
+{
 
-    public ItemCompactSolar(Block b) {
+    public ItemCompactSolar(Block b)
+    {
         super(b, true);
     }
 
     @Override
-    public int getMetadata(int i) {
-        if (i < CompactSolarType.values().length) {
+    public int getMetadata(int i)
+    {
+        if (i < CompactSolarType.values().length)
+        {
             return i;
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
-        return "tile.compactsolars:" + CompactSolarType.values()[itemstack.getItemDamage()].name() + "_block";
+    public String getUnlocalizedName(ItemStack itemstack)
+    {
+        return "tile.compactsolars:" + CompactSolarType.values()[itemstack.getItemDamage()].getName() + "_block";
     }
 }

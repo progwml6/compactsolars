@@ -33,7 +33,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable {
+public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable
+{
     private BasicSource energySource;
     private static Random random = new Random();
     private CompactSolarType type;
@@ -44,11 +45,13 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     private boolean canRain;
     private boolean noSunlight;
 
-    public TileEntityCompactSolar() {
+    public TileEntityCompactSolar()
+    {
         this(CompactSolarType.LOW_VOLTAGE);
     }
 
-    public TileEntityCompactSolar(CompactSolarType type) {
+    public TileEntityCompactSolar(CompactSolarType type)
+    {
         super();
         this.type = type;
         this.inventory = new ItemStack[1];
@@ -57,137 +60,169 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public void update() {
+    public void update()
+    {
         energySource.update();
-        if (!initialized && worldObj != null) {
+        if (!initialized && worldObj != null)
+        {
             canRain = worldObj.getChunkFromBlockCoords(pos).getBiome(pos, worldObj.getWorldChunkManager()).getIntRainfall() > 0;
             noSunlight = worldObj.provider.getHasNoSky();
             initialized = true;
         }
-        if (noSunlight) {
+        if (noSunlight)
+        {
             return;
         }
-        if (tick-- == 0) {
+        if (tick-- == 0)
+        {
             updateSunState();
             tick = 64;
         }
         int energyProduction = 0;
 
-        if (theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0)) {
+        if (theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0))
+        {
             energyProduction = generateEnergy();
         }
         energySource.addEnergy(energyProduction);
 
-        if (inventory[0] != null && (inventory[0].getItem() instanceof IElectricItem)) {
+        if (inventory[0] != null && (inventory[0].getItem() instanceof IElectricItem))
+        {
             energySource.charge(inventory[0]);
         }
     }
 
-    private void updateSunState() {
+    private void updateSunState()
+    {
         boolean isRaining = canRain && (worldObj.isRaining() || worldObj.isThundering());
         theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(pos.up());
     }
 
-    private int generateEnergy() {
+    private int generateEnergy()
+    {
         return type.getOutput();
     }
 
-    public ItemStack[] getContents() {
+    public ItemStack[] getContents()
+    {
         return inventory;
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 1;
     }
 
     @Override
-    public ItemStack getStackInSlot(int i) {
+    public ItemStack getStackInSlot(int i)
+    {
         return inventory[i];
     }
 
     @Override
-    public ItemStack decrStackSize(int i, int j) {
-        if (inventory[i] != null) {
-            if (inventory[i].stackSize <= j) {
+    public ItemStack decrStackSize(int i, int j)
+    {
+        if (inventory[i] != null)
+        {
+            if (inventory[i].stackSize <= j)
+            {
                 ItemStack itemstack = inventory[i];
                 inventory[i] = null;
                 markDirty();
                 return itemstack;
             }
             ItemStack itemstack1 = inventory[i].splitStack(j);
-            if (inventory[i].stackSize == 0) {
+            if (inventory[i].stackSize == 0)
+            {
                 inventory[i] = null;
             }
             markDirty();
             return itemstack1;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
+    public void setInventorySlotContents(int i, ItemStack itemstack)
+    {
         inventory[i] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
+        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        {
             itemstack.stackSize = getInventoryStackLimit();
         }
         markDirty();
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return type.name();
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getInventoryStackLimit()
+    {
         return 64;
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-        if (worldObj == null) {
+    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    {
+        if (worldObj == null)
+        {
             return true;
         }
-        if (worldObj.getTileEntity(pos) != this) {
+        if (worldObj.getTileEntity(pos) != this)
+        {
             return false;
         }
         return entityplayer.getDistanceSq(this.pos.getZ() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64D;
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(EntityPlayer player)
+    {
         // NOOP
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(EntityPlayer player)
+    {
         // NOOP
 
     }
 
     @Override
-    public EnumFacing getFacing(World world, BlockPos pos) {
+    public EnumFacing getFacing(World world, BlockPos pos)
+    {
         return EnumFacing.VALUES[0];
     }
 
     @Override
-    public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
+    public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player)
+    {
         return false;
     }
 
     @Override
-    public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
+    public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player)
+    {
         return true;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
+    public void writeToNBT(NBTTagCompound nbttagcompound)
+    {
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] != null) {
+        for (int i = 0; i < inventory.length; i++)
+        {
+            if (inventory[i] != null)
+            {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte) i);
                 inventory[i].writeToNBT(nbttagcompound1);
@@ -200,84 +235,103 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
+    public void readFromNBT(NBTTagCompound nbttagcompound)
+    {
         super.readFromNBT(nbttagcompound);
         energySource.onReadFromNbt(nbttagcompound);
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_LIST);
         inventory = new ItemStack[getSizeInventory()];
-        for (int i = 0; i < nbttaglist.tagCount(); i++) {
+        for (int i = 0; i < nbttaglist.tagCount(); i++)
+        {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 0xff;
-            if (j >= 0 && j < inventory.length) {
+            if (j >= 0 && j < inventory.length)
+            {
                 inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
     }
 
-    public CompactSolarType getType() {
+    public CompactSolarType getType()
+    {
         return type;
     }
 
     @Override
-    public void onChunkUnload() {
+    public void onChunkUnload()
+    {
         energySource.onChunkUnload();
     }
 
     @Override
-    public void invalidate() {
+    public void invalidate()
+    {
         energySource.onInvalidate();
         super.invalidate();
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int var1) {
-        if (this.inventory[var1] != null) {
+    public ItemStack removeStackFromSlot(int var1)
+    {
+        if (this.inventory[var1] != null)
+        {
             ItemStack var2 = this.inventory[var1];
             this.inventory[var1] = null;
             return var2;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
 
     @Override
-    public void clear() {
-        for (int i = 0; i < this.inventory.length; ++i) {
+    public void clear()
+    {
+        for (int i = 0; i < this.inventory.length; ++i)
+        {
             this.inventory[i] = null;
         }
     }
 
     @Override
-    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
+    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune)
+    {
         return Arrays.asList(new ItemStack[] { new ItemStack(CompactSolars.compactSolarBlock, 1, getType().ordinal()) });
     }
 
     @Override
-    public boolean hasCustomName() {
+    public boolean hasCustomName()
+    {
         return false;
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
         return itemstack != null && itemstack.getItem() instanceof IElectricItem;
     }
 
     @Override
-    public int getField(int id) {
+    public int getField(int id)
+    {
         return 0;
     }
 
     @Override
-    public void setField(int id, int value) {
+    public void setField(int id, int value)
+    {
     }
 
     @Override
-    public int getFieldCount() {
+    public int getFieldCount()
+    {
         return 0;
     }
 
     @Override
-    public IChatComponent getDisplayName() {
+    public IChatComponent getDisplayName()
+    {
         return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]);
     }
 

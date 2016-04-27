@@ -11,29 +11,45 @@
 package cpw.mods.compactsolars.client;
 
 import cpw.mods.compactsolars.CommonProxy;
+import cpw.mods.compactsolars.CompactSolars;
 import cpw.mods.compactsolars.TileEntityCompactSolar;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy
+{
     @Override
-    public void registerTileEntityRenderers() {
+    public void registerTileEntityRenderers()
+    {
         // NOOP for now
     }
 
     @Override
-    public void registerRenderInformation() {
+    public void registerRenderInformation()
+    {
+        //@formatter:off
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(CompactSolars.compactSolarBlock), 0, new ModelResourceLocation(CompactSolars.compactSolarBlock.getRegistryName(), "type=low_voltage"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(CompactSolars.compactSolarBlock), 1, new ModelResourceLocation(CompactSolars.compactSolarBlock.getRegistryName(), "type=medium_voltage"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(CompactSolars.compactSolarBlock), 2, new ModelResourceLocation(CompactSolars.compactSolarBlock.getRegistryName(), "type=high_voltage"));
+        //@formatter:on
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z) {
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
+    {
         TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));
-        if (te != null && te instanceof TileEntityCompactSolar) {
+        if (te != null && te instanceof TileEntityCompactSolar)
+        {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
             return GUISolar.GUI.buildGUI(tecs.getType(), player.inventory, tecs);
-        } else {
+        }
+        else
+        {
             return null;
         }
     }

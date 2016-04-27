@@ -1,20 +1,14 @@
 {
-   "forge_marker": 1,
-   "defaults": {
-      "transform": "forge:default-block",
-      "model": "cube_bottom_top"
-   },
-   "variants": {
-      "type": {
-         "low_voltage": {
-            "model": "compactsolars:low_voltage"
-         },
-         "medium_voltage": {
-            "model": "compactsolars:medium_voltage"
-         },
-         "high_voltage": {
-            "model": "compactsolars:high_voltage"
-         }
-      }
-   }
+	"forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"type": {
+			"low_voltage": { "model": "compactsolars:low_voltage" },
+			"medium_voltage": { "model": "compactsolars:medium_voltage" },
+			"high_voltage": { "model": "compactsolars:high_voltage" }
+		}
+	}
 }
+
