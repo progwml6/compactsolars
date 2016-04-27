@@ -27,8 +27,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public enum CompactSolarType implements IStringSerializable
 {
     //@formatter:off
-    LOW_VOLTAGE(8, 32, "Low Voltage Solar Array", "lv_transformer", TileEntityCompactSolar.class, "lvHat"), 
-    MEDIUM_VOLTAGE(64, 128, "Medium Voltage Solar Array", "mv_transformer", TileEntityCompactSolarMV.class, "mvHat"), 
+    LOW_VOLTAGE(8, 32, "Low Voltage Solar Array", "lv_transformer", TileEntityCompactSolar.class, "lvHat"),
+    MEDIUM_VOLTAGE(64, 128, "Medium Voltage Solar Array", "mv_transformer", TileEntityCompactSolarMV.class, "mvHat"),
     HIGH_VOLTAGE(512, 512, "High Voltage Solar Array", "hv_transformer", TileEntityCompactSolarHV.class, "hvHat");
     //@formatter:on
 
@@ -52,7 +52,7 @@ public enum CompactSolarType implements IStringSerializable
         this.friendlyName = friendlyName;
         this.transformerName = transformerName;
         this.clazz = clazz;
-        this.hatName = "solar_hat_" + name().toLowerCase();
+        this.hatName = "solar_hat_" + this.name().toLowerCase();
         this.hatTexture = new ResourceLocation("compactsolars", "textures/armor/" + hatTexture + ".png");
         this.hatItemTexture = new ResourceLocation("compactsolars", hatTexture);
         this.maxStorage = outputPacketSize << 1;
@@ -78,7 +78,7 @@ public enum CompactSolarType implements IStringSerializable
 
     public int getOutput()
     {
-        return output;
+        return this.output;
     }
 
     public static TileEntityCompactSolar makeEntity(int metadata)
@@ -97,25 +97,25 @@ public enum CompactSolarType implements IStringSerializable
 
     public int getTextureRow()
     {
-        return ordinal();
+        return this.ordinal();
     }
 
     public String tileEntityName()
     {
-        return "CompactSolarType." + name();
+        return "CompactSolarType." + this.name();
     }
 
     public ItemSolarHat buildHat()
     {
-        item = new ItemSolarHat(this);
-        GameRegistry.registerItem(item, hatName);
-        return item;
+        this.item = new ItemSolarHat(this);
+        GameRegistry.registerItem(this.item, this.hatName);
+        return this.item;
     }
 
     @SideOnly(Side.CLIENT)
     public void buildItemRenders()
     {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName()));
+        ModelLoader.setCustomModelResourceLocation(this.item, 0, new ModelResourceLocation(this.item.getRegistryName()));
     }
 
     public static void buildHats()
@@ -152,6 +152,6 @@ public enum CompactSolarType implements IStringSerializable
     @Override
     public String getName()
     {
-        return name().toLowerCase();
+        return this.name().toLowerCase();
     }
 }

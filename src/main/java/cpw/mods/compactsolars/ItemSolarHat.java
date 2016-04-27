@@ -20,8 +20,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.EnumHelper;
 
-public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
-    private class PlayerState {
+public class ItemSolarHat extends ItemArmor implements ISpecialArmor
+{
+    private class PlayerState
+    {
         boolean canRain;
         public long buildUp;
         public long lastTick;
@@ -31,86 +33,107 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor {
     private static Map<EntityPlayer, PlayerState> playerState = new MapMaker().weakKeys().makeMap();
     private CompactSolarType type;
 
-    public ItemSolarHat(CompactSolarType type) {
+    public ItemSolarHat(CompactSolarType type)
+    {
         super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1), 0, 0);
         this.type = type;
-        setUnlocalizedName("compactsolars:" + type.hatName);
+        this.setUnlocalizedName("compactsolars:" + type.hatName);
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layerType) {
-        return type.hatTexture.toString();
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layerType)
+    {
+        return this.type.hatTexture.toString();
     }
 
     @Override
-    public void onArmorTick(World worldObj, EntityPlayer player, ItemStack itemStack) {
+    public void onArmorTick(World worldObj, EntityPlayer player, ItemStack itemStack)
+    {
         // client side or no sky: no charge
-        if (worldObj.isRemote || worldObj.provider.getHasNoSky()) {
+        if (worldObj.isRemote || worldObj.provider.getHasNoSky())
+        {
             return;
         }
         // productionrate is set, and the tick is not zero : no charge
-        if (CompactSolars.productionRate != 1 && random.nextInt(CompactSolars.productionRate) != 0) {
+        if (CompactSolars.productionRate != 1 && random.nextInt(CompactSolars.productionRate) != 0)
+        {
             return;
         }
 
         boolean isRaining = false;
-        if (!this.playerState.containsKey(player)) {
+        if (!this.playerState.containsKey(player))
+        {
             this.playerState.put(player, new PlayerState());
         }
         PlayerState state = playerState.get(player);
-        if (worldObj.getTotalWorldTime() % 20 == 0) {
-            boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getWorldChunkManager()).getIntRainfall() > 0;
+        if (worldObj.getTotalWorldTime() % 20 == 0)
+        {
+            boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getWorldChunkManager())
+                    .getIntRainfall() > 0;
             state.canRain = canRain;
         }
         isRaining = state.canRain && (worldObj.isRaining() || worldObj.isThundering());
         boolean theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(player.getPosition().up());
 
-        if (!theSunIsVisible) {
+        if (!theSunIsVisible)
+        {
             return;
         }
 
-        int available = type.getOutput();
-        for (ItemStack is : player.inventory.armorInventory) {
-            if (is == itemStack) {
+        int available = this.type.getOutput();
+        for (ItemStack is : player.inventory.armorInventory)
+        {
+            if (is == itemStack)
+            {
                 continue;
             }
-            if (is != null) {
-                if (is.getItem() instanceof IElectricItem) {
+            if (is != null)
+            {
+                if (is.getItem() instanceof IElectricItem)
+                {
                     IElectricItem electricItem = (IElectricItem) is.getItem();
-                    available -= ElectricItem.manager.charge(is, available, type.ordinal() + 1, false, false);
+                    available -= ElectricItem.manager.charge(is, available, this.type.ordinal() + 1, false, false);
                 }
 
             }
         }
-        if (available <= 0) {
-            state.buildUp += IntMath.pow(2, type.ordinal());
-        } else {
+        if (available <= 0)
+        {
+            state.buildUp += IntMath.pow(2, this.type.ordinal());
+        }
+        else
+        {
             state.buildUp = Math.max(state.buildUp - (worldObj.getTotalWorldTime() - state.lastTick), 0);
         }
         state.lastTick = worldObj.getTotalWorldTime();
-        int dose = IntMath.pow(10, type.ordinal()) * 5;
-        if (state.buildUp > dose) {
+        int dose = IntMath.pow(10, this.type.ordinal()) * 5;
+        if (state.buildUp > dose)
+        {
             player.addPotionEffect(new PotionEffect(Potion.confusion.id, dose >> 2, 0));
             state.buildUp -= dose;
         }
     }
 
-    public static void clearRaining() {
+    public static void clearRaining()
+    {
         ItemSolarHat.playerState.clear();
     }
 
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
+    {
         return new ArmorProperties(0, 0, 0);
     }
 
     @Override
-    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
+    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
+    {
         return 0;
     }
 
     @Override
-    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
+    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot)
+    {
         return;
     }
 }

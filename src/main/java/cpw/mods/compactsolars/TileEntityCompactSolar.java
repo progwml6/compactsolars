@@ -62,50 +62,50 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public void update()
     {
-        energySource.update();
-        if (!initialized && worldObj != null)
+        this.energySource.update();
+        if (!this.initialized && this.worldObj != null)
         {
-            canRain = worldObj.getChunkFromBlockCoords(pos).getBiome(pos, worldObj.getWorldChunkManager()).getIntRainfall() > 0;
-            noSunlight = worldObj.provider.getHasNoSky();
-            initialized = true;
+            this.canRain = this.worldObj.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.worldObj.getWorldChunkManager()).getIntRainfall() > 0;
+            this.noSunlight = this.worldObj.provider.getHasNoSky();
+            this.initialized = true;
         }
-        if (noSunlight)
+        if (this.noSunlight)
         {
             return;
         }
-        if (tick-- == 0)
+        if (this.tick-- == 0)
         {
-            updateSunState();
-            tick = 64;
+            this.updateSunState();
+            this.tick = 64;
         }
         int energyProduction = 0;
 
-        if (theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0))
+        if (this.theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0))
         {
-            energyProduction = generateEnergy();
+            energyProduction = this.generateEnergy();
         }
-        energySource.addEnergy(energyProduction);
+        this.energySource.addEnergy(energyProduction);
 
-        if (inventory[0] != null && (inventory[0].getItem() instanceof IElectricItem))
+        if (this.inventory[0] != null && (this.inventory[0].getItem() instanceof IElectricItem))
         {
-            energySource.charge(inventory[0]);
+            this.energySource.charge(this.inventory[0]);
         }
     }
 
     private void updateSunState()
     {
-        boolean isRaining = canRain && (worldObj.isRaining() || worldObj.isThundering());
-        theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(pos.up());
+        boolean isRaining = this.canRain && (this.worldObj.isRaining() || this.worldObj.isThundering());
+        this.theSunIsVisible = this.worldObj.isDaytime() && !isRaining && this.worldObj.canSeeSky(this.pos.up());
     }
 
     private int generateEnergy()
     {
-        return type.getOutput();
+        return this.type.getOutput();
     }
 
     public ItemStack[] getContents()
     {
-        return inventory;
+        return this.inventory;
     }
 
     @Override
@@ -117,27 +117,27 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        return inventory[i];
+        return this.inventory[i];
     }
 
     @Override
     public ItemStack decrStackSize(int i, int j)
     {
-        if (inventory[i] != null)
+        if (this.inventory[i] != null)
         {
-            if (inventory[i].stackSize <= j)
+            if (this.inventory[i].stackSize <= j)
             {
-                ItemStack itemstack = inventory[i];
-                inventory[i] = null;
-                markDirty();
+                ItemStack itemstack = this.inventory[i];
+                this.inventory[i] = null;
+                this.markDirty();
                 return itemstack;
             }
-            ItemStack itemstack1 = inventory[i].splitStack(j);
-            if (inventory[i].stackSize == 0)
+            ItemStack itemstack1 = this.inventory[i].splitStack(j);
+            if (this.inventory[i].stackSize == 0)
             {
-                inventory[i] = null;
+                this.inventory[i] = null;
             }
-            markDirty();
+            this.markDirty();
             return itemstack1;
         }
         else
@@ -149,18 +149,18 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        inventory[i] = itemstack;
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        this.inventory[i] = itemstack;
+        if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
         {
-            itemstack.stackSize = getInventoryStackLimit();
+            itemstack.stackSize = this.getInventoryStackLimit();
         }
-        markDirty();
+        this.markDirty();
     }
 
     @Override
     public String getName()
     {
-        return type.name();
+        return this.type.name();
     }
 
     @Override
@@ -172,11 +172,11 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
-        if (worldObj == null)
+        if (this.worldObj == null)
         {
             return true;
         }
-        if (worldObj.getTileEntity(pos) != this)
+        if (this.worldObj.getTileEntity(this.pos) != this)
         {
             return false;
         }
@@ -219,54 +219,54 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     {
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++)
+        for (int i = 0; i < this.inventory.length; i++)
         {
-            if (inventory[i] != null)
+            if (this.inventory[i] != null)
             {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte) i);
-                inventory[i].writeToNBT(nbttagcompound1);
+                this.inventory[i].writeToNBT(nbttagcompound1);
                 nbttaglist.appendTag(nbttagcompound1);
             }
         }
 
         nbttagcompound.setTag("Items", nbttaglist);
-        energySource.onWriteToNbt(nbttagcompound);
+        this.energySource.onWriteToNbt(nbttagcompound);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-        energySource.onReadFromNbt(nbttagcompound);
+        this.energySource.onReadFromNbt(nbttagcompound);
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_LIST);
-        inventory = new ItemStack[getSizeInventory()];
+        this.inventory = new ItemStack[this.getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++)
         {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 0xff;
-            if (j >= 0 && j < inventory.length)
+            if (j >= 0 && j < this.inventory.length)
             {
-                inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+                this.inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
     }
 
     public CompactSolarType getType()
     {
-        return type;
+        return this.type;
     }
 
     @Override
     public void onChunkUnload()
     {
-        energySource.onChunkUnload();
+        this.energySource.onChunkUnload();
     }
 
     @Override
     public void invalidate()
     {
-        energySource.onInvalidate();
+        this.energySource.onInvalidate();
         super.invalidate();
     }
 
@@ -297,7 +297,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune)
     {
-        return Arrays.asList(new ItemStack[] { new ItemStack(CompactSolars.compactSolarBlock, 1, getType().ordinal()) });
+        return Arrays.asList(new ItemStack[] { new ItemStack(CompactSolars.compactSolarBlock, 1, this.getType().ordinal()) });
     }
 
     @Override

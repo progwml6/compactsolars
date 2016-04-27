@@ -20,88 +20,118 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerCompactSolar extends Container {
+public class ContainerCompactSolar extends Container
+{
     public TileEntityCompactSolar tile;
     private boolean theSunIsVisible;
     private boolean initialized;
     private EntityPlayer myPlayer;
 
-    public ContainerCompactSolar(IInventory playerInventory, TileEntityCompactSolar inventory, CompactSolarType type) {
+    public ContainerCompactSolar(IInventory playerInventory, TileEntityCompactSolar inventory, CompactSolarType type)
+    {
         this.tile = inventory;
         this.myPlayer = ((InventoryPlayer) playerInventory).player;
-        layoutContainer(playerInventory, inventory, type);
+        this.layoutContainer(playerInventory, inventory, type);
     }
 
-    private void layoutContainer(IInventory playerInventory, IInventory inventory, CompactSolarType type) {
-        addSlotToContainer(new Slot(inventory, 0, 80, 26));
-        for (int inventoryRow = 0; inventoryRow < 3; inventoryRow++) {
-            for (int inventoryColumn = 0; inventoryColumn < 9; inventoryColumn++) {
-                addSlotToContainer(new Slot(playerInventory, inventoryColumn + inventoryRow * 9 + 9, 8 + inventoryColumn * 18, 84 + inventoryRow * 18));
+    private void layoutContainer(IInventory playerInventory, IInventory inventory, CompactSolarType type)
+    {
+        this.addSlotToContainer(new Slot(inventory, 0, 80, 26));
+        for (int inventoryRow = 0; inventoryRow < 3; inventoryRow++)
+        {
+            for (int inventoryColumn = 0; inventoryColumn < 9; inventoryColumn++)
+            {
+                this.addSlotToContainer(new Slot(playerInventory, inventoryColumn + inventoryRow * 9 + 9, 8 + inventoryColumn * 18, 84 + inventoryRow * 18));
             }
         }
 
-        for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
-            addSlotToContainer(new Slot(playerInventory, hotbarSlot, 8 + hotbarSlot * 18, 142));
+        for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++)
+        {
+            this.addSlotToContainer(new Slot(playerInventory, hotbarSlot, 8 + hotbarSlot * 18, 142));
         }
 
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void detectAndSendChanges()
+    {
         super.detectAndSendChanges();
         @SuppressWarnings("unchecked")
         List<ICrafting> crafters = this.crafters;
-        for (ICrafting crafter : crafters) {
-            if (theSunIsVisible != tile.theSunIsVisible || !initialized) {
-                crafter.sendProgressBarUpdate(this, 0, tile.theSunIsVisible ? 1 : 0);
+        for (ICrafting crafter : crafters)
+        {
+            if (this.theSunIsVisible != this.tile.theSunIsVisible || !this.initialized)
+            {
+                crafter.sendProgressBarUpdate(this, 0, this.tile.theSunIsVisible ? 1 : 0);
             }
         }
-        initialized = true;
-        theSunIsVisible = tile.theSunIsVisible;
+        this.initialized = true;
+        this.theSunIsVisible = this.tile.theSunIsVisible;
     }
 
     @Override
-    public void updateProgressBar(int i, int j) {
-        if (i == 0) {
-            tile.theSunIsVisible = (j == 1);
+    public void updateProgressBar(int i, int j)
+    {
+        if (i == 0)
+        {
+            this.tile.theSunIsVisible = (j == 1);
         }
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
-        return tile.isUseableByPlayer(entityplayer);
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
+        return this.tile.isUseableByPlayer(entityplayer);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i) {
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
+    {
         ItemStack itemstack = null;
-        Slot slot = (Slot) inventorySlots.get(i);
-        if (slot != null && slot.getHasStack()) {
+        Slot slot = (Slot) this.inventorySlots.get(i);
+        if (slot != null && slot.getHasStack())
+        {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if (i == 0) {
-                if (!mergeItemStack(itemstack1, 1, 37, true)) {
+            if (i == 0)
+            {
+                if (!this.mergeItemStack(itemstack1, 1, 37, true))
+                {
                     return null;
                 }
-            } else if (i >= 1 && i < 28) {
-                if (!mergeItemStack(itemstack1, 28, 37, false)) {
+            }
+            else if (i >= 1 && i < 28)
+            {
+                if (!this.mergeItemStack(itemstack1, 28, 37, false))
+                {
                     return null;
                 }
-            } else if (i >= 28 && i < 37) {
-                if (!mergeItemStack(itemstack1, 1, 27, false)) {
+            }
+            else if (i >= 28 && i < 37)
+            {
+                if (!this.mergeItemStack(itemstack1, 1, 27, false))
+                {
                     return null;
                 }
-            } else if (!mergeItemStack(itemstack1, 1, 37, false)) {
+            }
+            else if (!this.mergeItemStack(itemstack1, 1, 37, false))
+            {
                 return null;
             }
-            if (itemstack1.stackSize == 0) {
+            if (itemstack1.stackSize == 0)
+            {
                 slot.putStack(null);
-            } else {
+            }
+            else
+            {
                 slot.onSlotChanged();
             }
-            if (itemstack1.stackSize != itemstack.stackSize) {
+            if (itemstack1.stackSize != itemstack.stackSize)
+            {
                 slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
@@ -109,7 +139,8 @@ public class ContainerCompactSolar extends Container {
         return itemstack;
     }
 
-    public EntityPlayer getPlayer() {
-        return myPlayer;
+    public EntityPlayer getPlayer()
+    {
+        return this.myPlayer;
     }
 }

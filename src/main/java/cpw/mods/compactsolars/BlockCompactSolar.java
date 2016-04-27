@@ -41,10 +41,10 @@ public class BlockCompactSolar extends BlockContainer
     public BlockCompactSolar()
     {
         super(Material.iron);
-        setUnlocalizedName("compact_solar_block");
-        setHardness(3.0F);
-        random = new Random();
-        setCreativeTab(CreativeTabs.tabRedstone);
+        this.setUnlocalizedName("compact_solar_block");
+        this.setHardness(3.0F);
+        this.random = new Random();
+        this.setCreativeTab(CreativeTabs.tabRedstone);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE_PROP, CompactSolarType.LOW_VOLTAGE));
     }
 
@@ -94,7 +94,7 @@ public class BlockCompactSolar extends BlockContainer
         TileEntityCompactSolar tileSolar = (TileEntityCompactSolar) world.getTileEntity(pos);
         if (tileSolar != null)
         {
-            dropContent(0, tileSolar, world);
+            this.dropContent(0, tileSolar, world);
         }
         super.breakBlock(world, pos, state);
     }
@@ -108,12 +108,12 @@ public class BlockCompactSolar extends BlockContainer
             {
                 continue;
             }
-            float f = random.nextFloat() * 0.8F + 0.1F;
-            float f1 = random.nextFloat() * 0.8F + 0.1F;
-            float f2 = random.nextFloat() * 0.8F + 0.1F;
+            float f = this.random.nextFloat() * 0.8F + 0.1F;
+            float f1 = this.random.nextFloat() * 0.8F + 0.1F;
+            float f2 = this.random.nextFloat() * 0.8F + 0.1F;
             while (itemstack.stackSize > 0)
             {
-                int i1 = random.nextInt(21) + 10;
+                int i1 = this.random.nextInt(21) + 10;
                 if (i1 > itemstack.stackSize)
                 {
                     i1 = itemstack.stackSize;
@@ -122,9 +122,9 @@ public class BlockCompactSolar extends BlockContainer
                 EntityItem entityitem = new EntityItem(world, tileSolar.getPos().getX() + f, (float) tileSolar.getPos().getY() + (newSize > 0 ? 1 : 0) + f1,
                         tileSolar.getPos().getZ() + f2, new ItemStack(itemstack.getItem(), i1, itemstack.getItemDamage()));
                 float f3 = 0.05F;
-                entityitem.motionX = (float) random.nextGaussian() * f3;
-                entityitem.motionY = (float) random.nextGaussian() * f3 + 0.2F;
-                entityitem.motionZ = (float) random.nextGaussian() * f3;
+                entityitem.motionX = (float) this.random.nextGaussian() * f3;
+                entityitem.motionY = (float) this.random.nextGaussian() * f3 + 0.2F;
+                entityitem.motionZ = (float) this.random.nextGaussian() * f3;
                 if (itemstack.hasTagCompound())
                 {
                     entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
