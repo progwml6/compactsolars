@@ -180,7 +180,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         {
             return false;
         }
-        return entityplayer.getDistanceSq(this.pos.getZ() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64D;
+        return (!isInvalid()) && (entityplayer.getDistanceSq(this.pos) <= 64.0D);
     }
 
     @Override
@@ -231,14 +231,14 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         }
 
         nbttagcompound.setTag("Items", nbttaglist);
-        this.energySource.onWriteToNbt(nbttagcompound);
+        this.energySource.writeToNBT(nbttagcompound);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-        this.energySource.onReadFromNbt(nbttagcompound);
+        this.energySource.readFromNBT(nbttagcompound);
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_LIST);
         this.inventory = new ItemStack[this.getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++)
@@ -266,7 +266,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public void invalidate()
     {
-        this.energySource.onInvalidate();
+        this.energySource.invalidate();
         super.invalidate();
     }
 

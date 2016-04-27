@@ -61,9 +61,9 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         }
 
         boolean isRaining = false;
-        if (!this.playerState.containsKey(player))
+        if (!ItemSolarHat.playerState.containsKey(player))
         {
-            this.playerState.put(player, new PlayerState());
+            ItemSolarHat.playerState.put(player, new PlayerState());
         }
         PlayerState state = playerState.get(player);
         if (worldObj.getTotalWorldTime() % 20 == 0)
@@ -91,7 +91,6 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
             {
                 if (is.getItem() instanceof IElectricItem)
                 {
-                    IElectricItem electricItem = (IElectricItem) is.getItem();
                     available -= ElectricItem.manager.charge(is, available, this.type.ordinal() + 1, false, false);
                 }
 

@@ -56,7 +56,6 @@ public class ContainerCompactSolar extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-        @SuppressWarnings("unchecked")
         List<ICrafting> crafters = this.crafters;
         for (ICrafting crafter : crafters)
         {
@@ -88,7 +87,7 @@ public class ContainerCompactSolar extends Container
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(i);
+        Slot slot = this.inventorySlots.get(i);
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
