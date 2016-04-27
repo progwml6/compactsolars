@@ -1,7 +1,7 @@
-tile.compactsolars:HV_block.name=Ηλιακή Παράταξη Υψηλής Τάσης
-tile.compactsolars:MV_block.name=Ηλιακή Παράταξη Μέσης Τάσης
-tile.compactsolars:LV_block.name=Ηλιακή Παράταξη Χαμηλής Τάσης
+tile.compactsolars:high_voltage_block.name=Ηλιακή Παράταξη Υψηλής Τάσης
+tile.compactsolars:medium_voltage_block.name=Ηλιακή Παράταξη Μέσης Τάσης
+tile.compactsolars:low_voltage_block.name=Ηλιακή Παράταξη Χαμηλής Τάσης
 
-item.compactsolars:solarHatHV.name=Ηλιακό Κάλυμμα Υψηλής Τάσης
-item.compactsolars:solarHatMV.name=Ηλιακό Κάλυμμα Μέσης Τάσης
-item.compactsolars:solarHatLV.name=Ηλιακό Κάλυμμα Χαμηλής Τάσης
+item.compactsolars:solar_hat_high_voltage.name=Ηλιακό Κάλυμμα Υψηλής Τάσης
+item.compactsolars:solar_hat_medium_voltage.name=Ηλιακό Κάλυμμα Μέσης Τάσης
+item.compactsolars:solar_hat_low_voltage.name=Ηλιακό Κάλυμμα Χαμηλής Τάσης
