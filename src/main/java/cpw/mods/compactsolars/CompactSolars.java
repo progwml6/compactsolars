@@ -12,6 +12,7 @@ package cpw.mods.compactsolars;
 
 import org.apache.logging.log4j.Level;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLLog;
@@ -26,12 +27,13 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "CompactSolars", name = "Compact Solar Arrays", dependencies = "required-after:Forge@[10.12,);required-after:IC2@[2.1,)")
+@Mod(modid = "CompactSolars", name = "Compact Solar Arrays", dependencies = "required-after:Forge@[12.17.0.1940,);required-after:IC2@[2.2,)")
 public class CompactSolars
 {
     @SidedProxy(clientSide = "cpw.mods.compactsolars.client.ClientProxy", serverSide = "cpw.mods.compactsolars.CommonProxy")
     public static CommonProxy proxy;
     public static BlockCompactSolar compactSolarBlock;
+    public static ItemCompactSolar compactSolarItemBlock;
     public static int productionRate = 1;
     @Instance("CompactSolars")
     public static CompactSolars instance;
@@ -46,10 +48,11 @@ public class CompactSolars
         {
             cfg.load();
             compactSolarBlock = new BlockCompactSolar();
+            compactSolarItemBlock = new ItemCompactSolar(compactSolarBlock);
             CompactSolarType.buildHats();
             Property scale = cfg.get(Configuration.CATEGORY_GENERAL, "scaleFactor", 1);
-            scale.comment = "The EU generation scaling factor. " + "The average number of ticks needed to generate one EU packet."
-                    + "1 is every tick, 2 is every other tick etc. " + "Each Solar will still generate a whole packet (8, 64, 512 EU).";
+            scale.setComment("The EU generation scaling factor. " + "The average number of ticks needed to generate one EU packet."
+                    + "1 is every tick, 2 is every other tick etc. " + "Each Solar will still generate a whole packet (8, 64, 512 EU).");
             productionRate = scale.getInt(1);
         }
         catch (Exception e)
@@ -61,30 +64,40 @@ public class CompactSolars
         {
             cfg.save();
         }
-        GameRegistry.registerBlock(compactSolarBlock, ItemCompactSolar.class, "compact_solar_block");
+
+        compactSolarBlock.setUnlocalizedName("compactsolars.compact_solar_block");
+        compactSolarBlock.setRegistryName(new ResourceLocation("compactsolars", "compact_solar_block"));
+
+        compactSolarItemBlock.setUnlocalizedName("compactsolars.compact_solar_block");
+        compactSolarItemBlock.setRegistryName(new ResourceLocation("compactsolars", "compact_solar_block"));
+
+        GameRegistry.register(compactSolarBlock);
+        GameRegistry.register(compactSolarItemBlock);
+
         for (CompactSolarType typ : CompactSolarType.values())
         {
             GameRegistry.registerTileEntity(typ.clazz, typ.tileEntityName());
         }
+
         proxy.registerRenderInformation();
     }
 
     @EventHandler
-    public void load(FMLInitializationEvent init)
+    public void init(FMLInitializationEvent init)
     {
         proxy.registerTileEntityRenderers();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
     @EventHandler
-    public void modsLoaded(FMLPostInitializationEvent postinit)
+    public void postInit(FMLPostInitializationEvent postinit)
     {
         CompactSolarType.generateRecipes(compactSolarBlock);
         CompactSolarType.generateHatRecipes(compactSolarBlock);
     }
 
     @EventHandler
-    public void resetMap(FMLServerStoppingEvent evt)
+    public void serverStopping(FMLServerStoppingEvent evt)
     {
         ItemSolarHat.clearRaining();
     }

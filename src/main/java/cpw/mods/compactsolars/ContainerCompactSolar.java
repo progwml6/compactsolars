@@ -15,7 +15,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -56,8 +56,8 @@ public class ContainerCompactSolar extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
-        List<ICrafting> crafters = this.crafters;
-        for (ICrafting crafter : crafters)
+        List<IContainerListener> crafters = this.listeners;
+        for (IContainerListener crafter : crafters)
         {
             if (this.theSunIsVisible != this.tile.theSunIsVisible || !this.initialized)
             {

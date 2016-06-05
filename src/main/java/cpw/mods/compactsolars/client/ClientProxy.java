@@ -13,11 +13,11 @@ package cpw.mods.compactsolars.client;
 import cpw.mods.compactsolars.CommonProxy;
 import cpw.mods.compactsolars.CompactSolars;
 import cpw.mods.compactsolars.TileEntityCompactSolar;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 

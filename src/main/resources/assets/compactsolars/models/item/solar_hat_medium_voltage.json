@@ -1,5 +1,5 @@
 {
-	"parent": "compactsolars:item/default",
+	"parent": "item/generated",
 	"textures": {
 		"layer0": "compactsolars:items/solar_hat_medium_voltage"
 	}

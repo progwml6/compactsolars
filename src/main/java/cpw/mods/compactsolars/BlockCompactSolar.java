@@ -13,11 +13,13 @@ package cpw.mods.compactsolars;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -26,8 +28,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,11 +44,10 @@ public class BlockCompactSolar extends BlockContainer
 
     public BlockCompactSolar()
     {
-        super(Material.iron);
-        this.setUnlocalizedName("compact_solar_block");
+        super(Material.IRON);
         this.setHardness(3.0F);
         this.random = new Random();
-        this.setCreativeTab(CreativeTabs.tabRedstone);
+        this.setCreativeTab(CreativeTabs.REDSTONE);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE_PROP, CompactSolarType.LOW_VOLTAGE));
     }
 
@@ -55,7 +58,7 @@ public class BlockCompactSolar extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (playerIn.isSneaking())
         {
@@ -83,9 +86,9 @@ public class BlockCompactSolar extends BlockContainer
     }
 
     @Override
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return 3;
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override
@@ -158,9 +161,9 @@ public class BlockCompactSolar extends BlockContainer
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty<?>[] { TYPE_PROP });
+        return new BlockStateContainer(this, new IProperty<?>[] { TYPE_PROP });
     }
 
 }

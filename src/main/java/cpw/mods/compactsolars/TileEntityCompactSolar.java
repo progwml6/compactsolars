@@ -24,12 +24,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -65,7 +65,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         this.energySource.update();
         if (!this.initialized && this.worldObj != null)
         {
-            this.canRain = this.worldObj.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.worldObj.getWorldChunkManager()).getIntRainfall() > 0;
+            this.canRain = this.worldObj.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.worldObj.getBiomeProvider()).getRainfall() > 0;
             this.noSunlight = this.worldObj.provider.getHasNoSky();
             this.initialized = true;
         }
@@ -215,7 +215,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
         NBTTagList nbttaglist = new NBTTagList();
@@ -231,7 +231,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         }
 
         nbttagcompound.setTag("Items", nbttaglist);
-        this.energySource.writeToNBT(nbttagcompound);
+        return this.energySource.writeToNBT(nbttagcompound);
     }
 
     @Override
@@ -330,9 +330,9 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]);
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]);
     }
 
 }

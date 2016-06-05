@@ -13,7 +13,7 @@ package cpw.mods.compactsolars;
 import com.google.common.base.Throwables;
 
 import ic2.api.item.IC2Items;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -108,14 +108,19 @@ public enum CompactSolarType implements IStringSerializable
     public ItemSolarHat buildHat()
     {
         this.item = new ItemSolarHat(this);
-        GameRegistry.registerItem(this.item, this.hatName);
+
+        this.item.setUnlocalizedName("compactsolars:" + this.hatName);
+        this.item.setRegistryName(new ResourceLocation("compactsolars", this.hatName));
+
+        GameRegistry.register(this.item);
+
         return this.item;
     }
 
     @SideOnly(Side.CLIENT)
     public void buildItemRenders()
     {
-        ModelLoader.setCustomModelResourceLocation(this.item, 0, new ModelResourceLocation(this.item.getRegistryName()));
+        ModelLoader.setCustomModelResourceLocation(this.item, 0, new ModelResourceLocation(this.item.getRegistryName().toString()));
     }
 
     public static void buildHats()
@@ -129,7 +134,7 @@ public enum CompactSolarType implements IStringSerializable
 
     public static void generateHatRecipes(BlockCompactSolar block)
     {
-        Item ironHat = Items.iron_helmet;
+        Item ironHat = Items.IRON_HELMET;
         for (CompactSolarType typ : values())
         {
             ItemStack solarBlock = new ItemStack(block, 0, typ.ordinal());

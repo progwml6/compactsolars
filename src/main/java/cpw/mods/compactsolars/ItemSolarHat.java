@@ -11,9 +11,10 @@ import ic2.api.item.IElectricItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -35,13 +36,12 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
 
     public ItemSolarHat(CompactSolarType type)
     {
-        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1), 0, 0);
+        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1, null, 0.0F), 0, EntityEquipmentSlot.HEAD);
         this.type = type;
-        this.setUnlocalizedName("compactsolars:" + type.hatName);
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layerType)
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
     {
         return this.type.hatTexture.toString();
     }
@@ -68,8 +68,8 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         PlayerState state = playerState.get(player);
         if (worldObj.getTotalWorldTime() % 20 == 0)
         {
-            boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getWorldChunkManager())
-                    .getIntRainfall() > 0;
+            boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getBiomeProvider())
+                    .getRainfall() > 0;
             state.canRain = canRain;
         }
         isRaining = state.canRain && (worldObj.isRaining() || worldObj.isThundering());
@@ -108,7 +108,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         int dose = IntMath.pow(10, this.type.ordinal()) * 5;
         if (state.buildUp > dose)
         {
-            player.addPotionEffect(new PotionEffect(Potion.confusion.id, dose >> 2, 0));
+            player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, dose >> 2, 0));
             state.buildUp -= dose;
         }
     }
