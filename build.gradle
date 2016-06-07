@@ -41,18 +41,12 @@ repositories {
         url "http://maven.ic2.player.to/"
     }
 }
-// CompactSolars uses git tagging to mark major versions. This sets up the project version to that version data
-def versionInfo = getGitVersion()
-version = "${project.minecraft.version}-${versionInfo['CompactSolars.version']}"
-curseforge {
-    apiKey = project.hasProperty('curseforge_apikey') ? project.curseforge_apikey : '0'
-    project {
-        id = '228759'
-        changelog = 'Empty'
-        releaseType = 'beta'
-    }
-}
 
+dependencies {
+    compile 'net.industrial-craft:industrialcraft-2:2.5.1-ex19:dev'
+    deobfCompile "mezz.jei:jei_1.9.4:3.4.3.207"
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+}
 
 // This is our group. I'm cpw.mods
 group= "cpw.mods" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -66,11 +60,24 @@ minecraft {
     runDir = "run"
 }
 
-dependencies {
-    compile 'net.industrial-craft:industrialcraft-2:2.5.1-ex19:dev'
-	deobfCompile "mezz.jei:jei_1.9.4:3.4.3.207"
-    //compile fileTree(dir: 'libs', include: ['*.jar'])
+// CompactSolars uses git tagging to mark major versions. This sets up the project version to that version data
+def versionInfo = getGitVersion()
+version = "${project.minecraft.version}-${versionInfo['CompactSolars.version']}"
+
+
+
+
+curseforge {
+    apiKey = project.hasProperty('curseforge_apikey') ? project.curseforge_apikey : '0'
+    project {
+        id = '228759'
+        changelog = 'Empty'
+        releaseType = 'beta'
+    }
 }
+
+
+
 
 // This wrangles the resources for the jar files- stuff like textures and languages
 processResources
