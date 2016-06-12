@@ -58,7 +58,9 @@ public class BlockCompactSolar extends BlockContainer
     }
 
     @Override
+    //@formatter:off
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    //@formatter:on
     {
         if (playerIn.isSneaking())
         {
@@ -71,6 +73,7 @@ public class BlockCompactSolar extends BlockContainer
         }
 
         TileEntity te = worldIn.getTileEntity(pos);
+
         if (te != null && te instanceof TileEntityCompactSolar)
         {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
@@ -104,9 +107,9 @@ public class BlockCompactSolar extends BlockContainer
 
     public void dropContent(int newSize, TileEntityCompactSolar tileSolar, World world)
     {
-        for (int l = newSize; l < tileSolar.getSizeInventory(); l++)
+        for (int slot = newSize; slot < tileSolar.getSizeInventory(); slot++)
         {
-            ItemStack itemstack = tileSolar.getStackInSlot(l);
+            ItemStack itemstack = tileSolar.getStackInSlot(slot);
             if (itemstack == null)
             {
                 continue;

@@ -40,9 +40,16 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
+    public void registerSolarHatModels(Item item)
     {
-        TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName().toString()));
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+
         if (te != null && te instanceof TileEntityCompactSolar)
         {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;

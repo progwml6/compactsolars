@@ -13,16 +13,12 @@ package cpw.mods.compactsolars;
 import com.google.common.base.Throwables;
 
 import ic2.api.item.IC2Items;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public enum CompactSolarType implements IStringSerializable
 {
@@ -61,12 +57,17 @@ public enum CompactSolarType implements IStringSerializable
     public static void generateRecipes(BlockCompactSolar block)
     {
         ItemStack solar = IC2Items.getItem("te", "solar_generator");
+
         ItemStack parent = solar;
+
         for (CompactSolarType typ : values())
         {
             ItemStack targ = new ItemStack(block, 1, typ.ordinal());
+
             ItemStack transformer = IC2Items.getItem("te", typ.transformerName);
+
             addRecipe(targ, "SSS", "SXS", "SSS", 'S', parent, 'X', transformer);
+
             parent = targ;
         }
     }
@@ -83,10 +84,9 @@ public enum CompactSolarType implements IStringSerializable
 
     public static TileEntityCompactSolar makeEntity(int metadata)
     {
-        int solartype = metadata;
         try
         {
-            TileEntityCompactSolar te = values()[solartype].clazz.newInstance();
+            TileEntityCompactSolar te = values()[metadata].clazz.newInstance();
             return te;
         }
         catch (Exception e)
@@ -117,36 +117,32 @@ public enum CompactSolarType implements IStringSerializable
         return this.item;
     }
 
-    @SideOnly(Side.CLIENT)
-    public void buildItemRenders()
-    {
-        ModelLoader.setCustomModelResourceLocation(this.item, 0, new ModelResourceLocation(this.item.getRegistryName().toString()));
-    }
-
     public static void buildHats()
     {
         for (CompactSolarType typ : values())
         {
             typ.buildHat();
-            typ.buildItemRenders();
+            CompactSolars.proxy.registerSolarHatModels(typ.item);
         }
     }
 
     public static void generateHatRecipes(BlockCompactSolar block)
     {
         Item ironHat = Items.IRON_HELMET;
+
         for (CompactSolarType typ : values())
         {
             ItemStack solarBlock = new ItemStack(block, 0, typ.ordinal());
+
             GameRegistry.addShapelessRecipe(new ItemStack(typ.item), solarBlock, ironHat);
         }
     }
 
-    public static int validateMeta(int i)
+    public static int validateMeta(int metadata)
     {
-        if (i < values().length)
+        if (metadata < values().length)
         {
-            return i;
+            return metadata;
         }
         else
         {

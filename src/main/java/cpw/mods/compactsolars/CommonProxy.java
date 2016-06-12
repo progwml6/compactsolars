@@ -11,6 +11,7 @@
 package cpw.mods.compactsolars;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,10 +29,16 @@ public class CommonProxy implements IGuiHandler
         // NOOP on server
     }
 
-    @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
+    public void registerSolarHatModels(Item item)
     {
-        TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));
+        // NOOP on server
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+
         if (te != null && te instanceof TileEntityCompactSolar)
         {
             TileEntityCompactSolar tecs = (TileEntityCompactSolar) te;
