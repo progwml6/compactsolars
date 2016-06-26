@@ -26,7 +26,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -133,21 +132,20 @@ public class BlockCompactSolar extends BlockContainer
                 entityitem.motionZ = (float) this.random.nextGaussian() * f3;
                 if (itemstack.hasTagCompound())
                 {
-                    entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
+                    entityitem.getEntityItem().setTagCompound(itemstack.getTagCompound().copy());
                 }
                 world.spawnEntityInWorld(entityitem);
             }
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List itemList)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
     {
         for (CompactSolarType type : CompactSolarType.values())
         {
-            itemList.add(new ItemStack(this, 1, type.ordinal()));
+            list.add(new ItemStack(this, 1, type.ordinal()));
         }
     }
 

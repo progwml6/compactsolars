@@ -76,12 +76,12 @@ public class GUISolar extends GuiContainer
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(gui);
-        int l = (this.width - this.xSize) / 2;
-        int i1 = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(l, i1, 0, 0, this.xSize, this.ySize);
+        int x = (this.width - this.xSize) / 2;
+        int y = (this.height - this.ySize) / 2;
+        this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         if (this.container.tile.theSunIsVisible)
         {
-            this.drawTexturedModalRect(l + 80, i1 + 45, 176, 0, 14, 14);
+            this.drawTexturedModalRect(x + 80, y + 45, 176, 0, 14, 14);
         }
     }
 

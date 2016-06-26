@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 
 public class ItemCompactSolar extends ItemColored
 {
-
     public ItemCompactSolar(Block b)
     {
         super(b, true);

@@ -96,13 +96,13 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
             {
                 continue;
             }
+
             if (stack != null)
             {
                 if (stack.getItem() instanceof IElectricItem)
                 {
                     available -= ElectricItem.manager.charge(stack, available, this.type.ordinal() + 1, false, false);
                 }
-
             }
         }
 
