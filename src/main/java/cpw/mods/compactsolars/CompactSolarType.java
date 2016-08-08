@@ -23,6 +23,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.server.MinecraftServer;
 
 public enum CompactSolarType implements IStringSerializable
 {
@@ -123,7 +124,9 @@ public enum CompactSolarType implements IStringSerializable
         for (CompactSolarType typ : values())
         {
             typ.buildHat();
-            typ.buildItemRenders();
+			if(MinecraftServer.getServer().isDedicatedServer())
+				continue;
+			typ.buildItemRenders();
         }
     }
 
