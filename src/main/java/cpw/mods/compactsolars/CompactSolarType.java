@@ -125,7 +125,7 @@ public enum CompactSolarType implements IStringSerializable
         {
             typ.buildHat();
 			if(MinecraftServer.getServer().isDedicatedServer())
-				return;
+				continue;
 			typ.buildItemRenders();
         }
     }
