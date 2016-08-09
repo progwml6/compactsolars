@@ -11,6 +11,7 @@
 package cpw.mods.compactsolars;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -24,6 +25,11 @@ public class CommonProxy implements IGuiHandler
     }
 
     public void registerRenderInformation()
+    {
+        // NOOP on server
+    }
+
+    public void registerSolarHatModels(Item item)
     {
         // NOOP on server
     }

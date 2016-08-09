@@ -23,11 +23,11 @@ public class ItemCompactSolar extends ItemColored
     }
 
     @Override
-    public int getMetadata(int i)
+    public int getMetadata(int damage)
     {
-        if (i < CompactSolarType.values().length)
+        if (damage < CompactSolarType.values().length)
         {
-            return i;
+            return damage;
         }
         else
         {
@@ -36,8 +36,8 @@ public class ItemCompactSolar extends ItemColored
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack itemstack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        return "tile.compactsolars:" + CompactSolarType.values()[itemstack.getItemDamage()].getName() + "_block";
+        return "tile.compactsolars:" + CompactSolarType.values()[stack.getItemDamage()].getName() + "_block";
     }
 }

@@ -41,7 +41,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layerType)
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         return this.type.hatTexture.toString();
     }
@@ -54,6 +54,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         {
             return;
         }
+
         // productionrate is set, and the tick is not zero : no charge
         if (CompactSolars.productionRate != 1 && random.nextInt(CompactSolars.productionRate) != 0)
         {
@@ -61,18 +62,23 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         }
 
         boolean isRaining = false;
+
         if (!ItemSolarHat.playerState.containsKey(player))
         {
             ItemSolarHat.playerState.put(player, new PlayerState());
         }
+
         PlayerState state = playerState.get(player);
+
         if (worldObj.getTotalWorldTime() % 20 == 0)
         {
             boolean canRain = worldObj.getChunkFromBlockCoords(player.getPosition()).getBiome(player.getPosition(), worldObj.getWorldChunkManager())
                     .getIntRainfall() > 0;
             state.canRain = canRain;
         }
+
         isRaining = state.canRain && (worldObj.isRaining() || worldObj.isThundering());
+
         boolean theSunIsVisible = worldObj.isDaytime() && !isRaining && worldObj.canSeeSky(player.getPosition().up());
 
         if (!theSunIsVisible)
@@ -81,21 +87,22 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         }
 
         int available = this.type.getOutput();
-        for (ItemStack is : player.inventory.armorInventory)
+
+        for (ItemStack stack : player.inventory.armorInventory)
         {
-            if (is == itemStack)
+            if (stack == itemStack)
             {
                 continue;
             }
-            if (is != null)
+            if (stack != null)
             {
-                if (is.getItem() instanceof IElectricItem)
+                if (stack.getItem() instanceof IElectricItem)
                 {
-                    available -= ElectricItem.manager.charge(is, available, this.type.ordinal() + 1, false, false);
+                    available -= ElectricItem.manager.charge(stack, available, this.type.ordinal() + 1, false, false);
                 }
-
             }
         }
+
         if (available <= 0)
         {
             state.buildUp += IntMath.pow(2, this.type.ordinal());
@@ -104,8 +111,11 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         {
             state.buildUp = Math.max(state.buildUp - (worldObj.getTotalWorldTime() - state.lastTick), 0);
         }
+
         state.lastTick = worldObj.getTotalWorldTime();
+
         int dose = IntMath.pow(10, this.type.ordinal()) * 5;
+
         if (state.buildUp > dose)
         {
             player.addPotionEffect(new PotionEffect(Potion.confusion.id, dose >> 2, 0));

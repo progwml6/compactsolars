@@ -40,6 +40,12 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
+    public void registerSolarHatModels(Item item)
+    {
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName()));
+    }
+
+    @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
     {
         TileEntity te = world.getTileEntity(new BlockPos(X, Y, Z));

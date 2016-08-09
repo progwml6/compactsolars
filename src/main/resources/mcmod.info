@@ -7,9 +7,7 @@
   "mcversion": "${mcversion}",
   "url": "http://forum.industrial-craft.net/index.php?page=Thread&threadID=4827",
   "updateUrl": "",
-  "authors": [
-    "cpw"
-  ],
+  "authorList": ["cpw"],
   "credits": "By cpw, based on an original idea by Zippinus, 1.7.2 update by ProgWML6",
   "logoFile": "",
   "screenshots": [

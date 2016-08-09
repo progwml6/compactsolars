@@ -27,6 +27,7 @@ out/
 /.settings/
 /debug/
 *.lock
+*.launch
 /.metadata/
 /config/
 /logs/

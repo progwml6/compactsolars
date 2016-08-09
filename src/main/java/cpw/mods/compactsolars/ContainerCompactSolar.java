@@ -27,16 +27,16 @@ public class ContainerCompactSolar extends Container
     private boolean initialized;
     private EntityPlayer myPlayer;
 
-    public ContainerCompactSolar(IInventory playerInventory, TileEntityCompactSolar inventory, CompactSolarType type)
+    public ContainerCompactSolar(IInventory playerInventory, TileEntityCompactSolar solarInventoryIn, CompactSolarType type)
     {
-        this.tile = inventory;
+        this.tile = solarInventoryIn;
         this.myPlayer = ((InventoryPlayer) playerInventory).player;
-        this.layoutContainer(playerInventory, inventory, type);
+        this.layoutContainer(playerInventory, solarInventoryIn, type);
     }
 
-    private void layoutContainer(IInventory playerInventory, IInventory inventory, CompactSolarType type)
+    private void layoutContainer(IInventory playerInventory, IInventory solarInventoryIn, CompactSolarType type)
     {
-        this.addSlotToContainer(new Slot(inventory, 0, 80, 26));
+        this.addSlotToContainer(new Slot(solarInventoryIn, 0, 80, 26));
         for (int inventoryRow = 0; inventoryRow < 3; inventoryRow++)
         {
             for (int inventoryColumn = 0; inventoryColumn < 9; inventoryColumn++)
@@ -56,7 +56,9 @@ public class ContainerCompactSolar extends Container
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
+
         List<ICrafting> crafters = this.crafters;
+
         for (ICrafting crafter : crafters)
         {
             if (this.theSunIsVisible != this.tile.theSunIsVisible || !this.initialized)
@@ -64,7 +66,9 @@ public class ContainerCompactSolar extends Container
                 crafter.sendProgressBarUpdate(this, 0, this.tile.theSunIsVisible ? 1 : 0);
             }
         }
+
         this.initialized = true;
+
         this.theSunIsVisible = this.tile.theSunIsVisible;
     }
 
@@ -78,46 +82,51 @@ public class ContainerCompactSolar extends Container
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
+    public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return this.tile.isUseableByPlayer(entityplayer);
+        return this.tile.isUseableByPlayer(playerIn);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
-        ItemStack itemstack = null;
-        Slot slot = this.inventorySlots.get(i);
+        ItemStack stack = null;
+
+        Slot slot = this.inventorySlots.get(index);
+
         if (slot != null && slot.getHasStack())
         {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-            if (i == 0)
+            ItemStack slotStack = slot.getStack();
+
+            stack = slotStack.copy();
+
+            if (index == 0)
             {
-                if (!this.mergeItemStack(itemstack1, 1, 37, true))
+                if (!this.mergeItemStack(slotStack, 1, 37, true))
                 {
                     return null;
                 }
             }
-            else if (i >= 1 && i < 28)
+            else if (index >= 1 && index < 28)
             {
-                if (!this.mergeItemStack(itemstack1, 28, 37, false))
+                if (!this.mergeItemStack(slotStack, 28, 37, false))
                 {
                     return null;
                 }
             }
-            else if (i >= 28 && i < 37)
+            else if (index >= 28 && index < 37)
             {
-                if (!this.mergeItemStack(itemstack1, 1, 27, false))
+                if (!this.mergeItemStack(slotStack, 1, 27, false))
                 {
                     return null;
                 }
             }
-            else if (!this.mergeItemStack(itemstack1, 1, 37, false))
+            else if (!this.mergeItemStack(slotStack, 1, 37, false))
             {
                 return null;
             }
-            if (itemstack1.stackSize == 0)
+
+            if (slotStack.stackSize == 0)
             {
                 slot.putStack(null);
             }
@@ -125,9 +134,10 @@ public class ContainerCompactSolar extends Container
             {
                 slot.onSlotChanged();
             }
-            if (itemstack1.stackSize != itemstack.stackSize)
+
+            if (slotStack.stackSize != stack.stackSize)
             {
-                slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
+                slot.onPickupFromSlot(playerIn, slotStack);
             }
             else
             {
@@ -135,7 +145,7 @@ public class ContainerCompactSolar extends Container
             }
         }
 
-        return itemstack;
+        return stack;
     }
 
     public EntityPlayer getPlayer()

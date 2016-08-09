@@ -101,9 +101,9 @@ public class BlockCompactSolar extends BlockContainer
 
     public void dropContent(int newSize, TileEntityCompactSolar tileSolar, World world)
     {
-        for (int l = newSize; l < tileSolar.getSizeInventory(); l++)
+        for (int slot = newSize; slot < tileSolar.getSizeInventory(); slot++)
         {
-            ItemStack itemstack = tileSolar.getStackInSlot(l);
+            ItemStack itemstack = tileSolar.getStackInSlot(slot);
             if (itemstack == null)
             {
                 continue;
@@ -134,14 +134,13 @@ public class BlockCompactSolar extends BlockContainer
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List itemList)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
     {
         for (CompactSolarType type : CompactSolarType.values())
         {
-            itemList.add(new ItemStack(this, 1, type.ordinal()));
+            list.add(new ItemStack(this, 1, type.ordinal()));
         }
     }
 

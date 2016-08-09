@@ -70,21 +70,21 @@ public class CompactSolars
     }
 
     @EventHandler
-    public void load(FMLInitializationEvent init)
+    public void init(FMLInitializationEvent init)
     {
         proxy.registerTileEntityRenderers();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
     @EventHandler
-    public void modsLoaded(FMLPostInitializationEvent postinit)
+    public void postInit(FMLPostInitializationEvent postinit)
     {
         CompactSolarType.generateRecipes(compactSolarBlock);
         CompactSolarType.generateHatRecipes(compactSolarBlock);
     }
 
     @EventHandler
-    public void resetMap(FMLServerStoppingEvent evt)
+    public void serverStopping(FMLServerStoppingEvent evt)
     {
         ItemSolarHat.clearRaining();
     }
