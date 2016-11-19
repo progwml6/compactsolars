@@ -84,13 +84,13 @@ public class ContainerCompactSolar extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return this.tile.isUseableByPlayer(playerIn);
+        return this.tile.isUsableByPlayer(playerIn);
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
-        ItemStack stack = null;
+        ItemStack stack = ItemStack.EMPTY;
 
         Slot slot = this.inventorySlots.get(index);
 
@@ -103,44 +103,44 @@ public class ContainerCompactSolar extends Container
             {
                 if (!this.mergeItemStack(slotStack, 1, 37, true))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (index >= 1 && index < 28)
             {
                 if (!this.mergeItemStack(slotStack, 28, 37, false))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (index >= 28 && index < 37)
             {
                 if (!this.mergeItemStack(slotStack, 1, 27, false))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (!this.mergeItemStack(slotStack, 1, 37, false))
             {
-                return null;
+                return ItemStack.EMPTY;
             }
 
-            if (slotStack.stackSize == 0)
+            if (slotStack.getCount() == 0)
             {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {
                 slot.onSlotChanged();
             }
 
-            if (slotStack.stackSize != stack.stackSize)
+            if (slotStack.getCount() != stack.getCount())
             {
-                slot.onPickupFromSlot(playerIn, slotStack);
+                slot.onTake(playerIn, slotStack);
             }
             else
             {
-                return null;
+                return ItemStack.EMPTY;
             }
         }
 

@@ -23,9 +23,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public enum CompactSolarType implements IStringSerializable
 {
     //@formatter:off
-    LOW_VOLTAGE(8, 32, "Low Voltage Solar Array", "lv_transformer", TileEntityCompactSolar.class, "lvHat"),
-    MEDIUM_VOLTAGE(64, 128, "Medium Voltage Solar Array", "mv_transformer", TileEntityCompactSolarMV.class, "mvHat"),
-    HIGH_VOLTAGE(512, 512, "High Voltage Solar Array", "hv_transformer", TileEntityCompactSolarHV.class, "hvHat");
+    LOW_VOLTAGE(8, 32, "Low Voltage Solar Array", "lv_transformer", TileEntityCompactSolar.class, "lv_hat"),
+    MEDIUM_VOLTAGE(64, 128, "Medium Voltage Solar Array", "mv_transformer", TileEntityCompactSolarMV.class, "mv_hat"),
+    HIGH_VOLTAGE(512, 512, "High Voltage Solar Array", "hv_transformer", TileEntityCompactSolarHV.class, "hv_hat");
     //@formatter:on
 
     private int output;

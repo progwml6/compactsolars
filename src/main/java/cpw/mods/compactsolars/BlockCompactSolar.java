@@ -10,10 +10,7 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
-import java.util.List;
 import java.util.Random;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -30,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -58,7 +56,7 @@ public class BlockCompactSolar extends BlockContainer
 
     @Override
     //@formatter:off
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     //@formatter:on
     {
         if (playerIn.isSneaking())
@@ -109,21 +107,21 @@ public class BlockCompactSolar extends BlockContainer
         for (int slot = newSize; slot < tileSolar.getSizeInventory(); slot++)
         {
             ItemStack itemstack = tileSolar.getStackInSlot(slot);
-            if (itemstack == null)
+            if (itemstack == ItemStack.EMPTY)
             {
                 continue;
             }
             float f = this.random.nextFloat() * 0.8F + 0.1F;
             float f1 = this.random.nextFloat() * 0.8F + 0.1F;
             float f2 = this.random.nextFloat() * 0.8F + 0.1F;
-            while (itemstack.stackSize > 0)
+            while (itemstack.getCount() > 0)
             {
                 int i1 = this.random.nextInt(21) + 10;
-                if (i1 > itemstack.stackSize)
+                if (i1 > itemstack.getCount())
                 {
-                    i1 = itemstack.stackSize;
+                    i1 = itemstack.getCount();
                 }
-                itemstack.stackSize -= i1;
+                itemstack.shrink(i1);
                 EntityItem entityitem = new EntityItem(world, tileSolar.getPos().getX() + f, (float) tileSolar.getPos().getY() + (newSize > 0 ? 1 : 0) + f1,
                         tileSolar.getPos().getZ() + f2, new ItemStack(itemstack.getItem(), i1, itemstack.getItemDamage()));
                 float f3 = 0.05F;
@@ -134,14 +132,14 @@ public class BlockCompactSolar extends BlockContainer
                 {
                     entityitem.getEntityItem().setTagCompound(itemstack.getTagCompound().copy());
                 }
-                world.spawnEntityInWorld(entityitem);
+                world.spawnEntity(entityitem);
             }
         }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (CompactSolarType type : CompactSolarType.values())
         {

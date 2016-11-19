@@ -16,7 +16,6 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import ic2.api.energy.prefab.BasicSource;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +27,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -37,10 +37,10 @@ import net.minecraftforge.common.util.Constants;
 
 public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable
 {
-    private BasicSource energySource;
+    // private BasicSource energySource;
     private static Random random = new Random();
     private CompactSolarType type;
-    private ItemStack[] inventory;
+    private NonNullList<ItemStack> inventory;
     private boolean initialized;
     public boolean theSunIsVisible;
     private int tick;
@@ -56,20 +56,20 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     {
         super();
         this.type = type;
-        this.inventory = new ItemStack[1];
+        this.inventory = NonNullList.<ItemStack> withSize(1, ItemStack.EMPTY);
         this.tick = random.nextInt(64);
-        this.energySource = new BasicSource(this, type.maxStorage, type.ordinal() + 1);
+        // this.energySource = new BasicSource(this, type.maxStorage, type.ordinal() + 1);
     }
 
     @Override
     public void update()
     {
-        this.energySource.update();
+        // this.energySource.update();
 
-        if (!this.initialized && this.worldObj != null)
+        if (!this.initialized && this.world != null)
         {
-            this.canRain = this.worldObj.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.worldObj.getBiomeProvider()).getRainfall() > 0;
-            this.noSunlight = this.worldObj.provider.getHasNoSky();
+            this.canRain = this.world.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.world.getBiomeProvider()).getRainfall() > 0;
+            this.noSunlight = this.world.provider.hasNoSky();
             this.initialized = true;
         }
 
@@ -84,26 +84,22 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
             this.tick = 64;
         }
 
-        int energyProduction = 0;
-
-        if (this.theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0))
-        {
-            energyProduction = this.generateEnergy();
-        }
-
-        this.energySource.addEnergy(energyProduction);
-
-        if (this.inventory[0] != null && (this.inventory[0].getItem() instanceof IElectricItem))
-        {
-            this.energySource.charge(this.inventory[0]);
-        }
+        /*
+         * int energyProduction = 0;
+         * 
+         * if (this.theSunIsVisible && (CompactSolars.productionRate == 1 || random.nextInt(CompactSolars.productionRate) == 0)) { energyProduction = this.generateEnergy(); }
+         * 
+         * this.energySource.addEnergy(energyProduction);
+         * 
+         * if (this.inventory.get(0) != ItemStack.EMPTY && (this.inventory.get(0).getItem() instanceof IElectricItem)) { this.energySource.charge(this.inventory.get(0)); }
+         */
     }
 
     private void updateSunState()
     {
-        boolean isRaining = this.canRain && (this.worldObj.isRaining() || this.worldObj.isThundering());
+        boolean isRaining = this.canRain && (this.world.isRaining() || this.world.isThundering());
 
-        this.theSunIsVisible = this.worldObj.isDaytime() && !isRaining && this.worldObj.canSeeSky(this.pos.up());
+        this.theSunIsVisible = this.world.isDaytime() && !isRaining && this.world.canSeeSky(this.pos.up());
     }
 
     private int generateEnergy()
@@ -111,7 +107,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         return this.type.getOutput();
     }
 
-    public ItemStack[] getContents()
+    public NonNullList<ItemStack> getContents()
     {
         return this.inventory;
     }
@@ -125,27 +121,27 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public ItemStack getStackInSlot(int index)
     {
-        return this.inventory[index];
+        return this.inventory.get(index);
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
-        if (this.inventory[index] != null)
+        if (this.inventory.get(index) != ItemStack.EMPTY)
         {
-            if (this.inventory[index].stackSize <= count)
+            if (this.inventory.get(index).getCount() <= count)
             {
-                ItemStack stack = this.inventory[index];
-                this.inventory[index] = null;
+                ItemStack stack = this.inventory.get(index);
+                this.inventory.set(index, ItemStack.EMPTY);
                 this.markDirty();
                 return stack;
             }
 
-            ItemStack stack = this.inventory[index].splitStack(count);
+            ItemStack stack = this.inventory.get(index).splitStack(count);
 
-            if (this.inventory[index].stackSize == 0)
+            if (this.inventory.get(index).getCount() == 0)
             {
-                this.inventory[index] = null;
+                this.inventory.set(index, ItemStack.EMPTY);
             }
 
             this.markDirty();
@@ -154,18 +150,18 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         }
         else
         {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack)
     {
-        this.inventory[index] = stack;
+        this.inventory.set(index, stack);
 
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != ItemStack.EMPTY && stack.getCount() > this.getInventoryStackLimit())
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.setCount(this.getInventoryStackLimit());
         }
 
         this.markDirty();
@@ -184,14 +180,14 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
-        if (this.worldObj == null)
+        if (this.world == null)
         {
             return true;
         }
 
-        if (this.worldObj.getTileEntity(this.pos) != this)
+        if (this.world.getTileEntity(this.pos) != this)
         {
             return false;
         }
@@ -235,35 +231,35 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     {
         super.writeToNBT(compound);
         NBTTagList tagList = new NBTTagList();
-        for (int slot = 0; slot < this.inventory.length; slot++)
+        for (int slot = 0; slot < this.inventory.size(); slot++)
         {
-            if (this.inventory[slot] != null)
+            if (this.inventory.get(slot) != ItemStack.EMPTY)
             {
                 NBTTagCompound itemCompound = new NBTTagCompound();
                 itemCompound.setByte("Slot", (byte) slot);
-                this.inventory[slot].writeToNBT(itemCompound);
+                this.inventory.get(slot).writeToNBT(itemCompound);
                 tagList.appendTag(itemCompound);
             }
         }
 
         compound.setTag("Items", tagList);
-        return this.energySource.writeToNBT(compound);
+        return compound;// this.energySource.writeToNBT(compound);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        this.energySource.readFromNBT(compound);
+        // this.energySource.readFromNBT(compound);
         NBTTagList tagList = compound.getTagList("Items", Constants.NBT.TAG_LIST);
-        this.inventory = new ItemStack[this.getSizeInventory()];
+        this.inventory = NonNullList.<ItemStack> withSize(this.getSizeInventory(), ItemStack.EMPTY);
         for (int itemCount = 0; itemCount < tagList.tagCount(); itemCount++)
         {
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(itemCount);
             int slot = itemCompound.getByte("Slot") & 0xff;
-            if (slot >= 0 && slot < this.inventory.length)
+            if (slot >= 0 && slot < this.inventory.size())
             {
-                this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemCompound);
+                this.inventory.set(slot, new ItemStack(itemCompound));
             }
         }
     }
@@ -276,37 +272,37 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public void onChunkUnload()
     {
-        this.energySource.onChunkUnload();
+        // this.energySource.onChunkUnload();
     }
 
     @Override
     public void invalidate()
     {
-        this.energySource.invalidate();
+        // this.energySource.invalidate();
         super.invalidate();
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index)
     {
-        if (this.inventory[index] != null)
+        if (this.inventory.get(index) != ItemStack.EMPTY)
         {
-            ItemStack stack = this.inventory[index];
-            this.inventory[index] = null;
+            ItemStack stack = this.inventory.get(index);
+            this.inventory.set(index, ItemStack.EMPTY);
             return stack;
         }
         else
         {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
     public void clear()
     {
-        for (int i = 0; i < this.inventory.length; ++i)
+        for (int i = 0; i < this.inventory.size(); ++i)
         {
-            this.inventory[i] = null;
+            this.inventory.set(i, ItemStack.EMPTY);
         }
     }
 
@@ -325,7 +321,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return stack != null && stack.getItem() instanceof IElectricItem;
+        return stack != ItemStack.EMPTY && stack.getItem() instanceof IElectricItem;
     }
 
     @Override
@@ -349,5 +345,19 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     public ITextComponent getDisplayName()
     {
         return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]);
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        for (ItemStack itemstack : this.inventory)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
