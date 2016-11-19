@@ -44,7 +44,7 @@ repositories {
 
 dependencies {
     //deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.1-ex110'
-    //compile 'net.industrial-craft:industrialcraft-2:2.6.23-ex110:dev'
+    compile 'net.industrial-craft:industrialcraft-2:2.6.23-ex110:dev'
     deobfCompile "mezz.jei:jei_1.11:4.0.1.193"
     //compile fileTree(dir: 'libs', include: ['*.jar'])
 }
