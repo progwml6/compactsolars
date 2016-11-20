@@ -10,15 +10,31 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public class ItemCompactSolar extends ItemColored
 {
     public ItemCompactSolar(Block b)
     {
         super(b, true);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    {
+        tooltip.add(I18n.translateToLocal(
+                I18n.translateToLocalFormatted("tile.compactsolars:powertier.tooltip", CompactSolarType.values()[stack.getItemDamage()].ordinal() + 1).trim())
+                .trim());
     }
 
     @Override
