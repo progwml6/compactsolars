@@ -43,9 +43,9 @@ repositories {
 }
 
 dependencies {
-    //deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.1-ex110'
-    compile 'net.industrial-craft:industrialcraft-2:2.6.12-ex110:dev'
-    deobfCompile "mezz.jei:jei_1.10.2:3.7.6.232"
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.130-ex110'
+    //compile 'net.industrial-craft:industrialcraft-2:2.6.107-ex110:dev'
+    deobfCompile "mezz.jei:jei_1.10.2:3.13.6.391"
     //compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
@@ -56,8 +56,8 @@ archivesBaseName = "CompactSolars"
 
 // Setup the forge minecraft plugin data. Specify the preferred forge/minecraft version here
 minecraft {
-    version = "1.10.2-12.18.1.2014"
-    mappings = "snapshot_20160715"
+    version = "1.10.2-12.18.3.2185"
+    mappings = "snapshot_20161116"
     runDir = "run"
 }
 

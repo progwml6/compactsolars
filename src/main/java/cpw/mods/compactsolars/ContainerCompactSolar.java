@@ -23,8 +23,11 @@ import net.minecraft.item.ItemStack;
 public class ContainerCompactSolar extends Container
 {
     public TileEntityCompactSolar tile;
+
     private boolean theSunIsVisible;
+
     private boolean initialized;
+
     private EntityPlayer myPlayer;
 
     public ContainerCompactSolar(IInventory playerInventory, TileEntityCompactSolar solarInventoryIn, CompactSolarType type)
@@ -84,7 +87,7 @@ public class ContainerCompactSolar extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return this.tile.isUseableByPlayer(playerIn);
+        return this.tile.isUsableByPlayer(playerIn);
     }
 
     @Override

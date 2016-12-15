@@ -38,13 +38,21 @@ import net.minecraftforge.common.util.Constants;
 public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable
 {
     private BasicSource energySource;
+
     private static Random random = new Random();
+
     private CompactSolarType type;
+
     private ItemStack[] inventory;
+
     private boolean initialized;
+
     public boolean theSunIsVisible;
+
     private int tick;
+
     private boolean canRain;
+
     private boolean noSunlight;
 
     public TileEntityCompactSolar()
@@ -66,10 +74,10 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     {
         this.energySource.update();
 
-        if (!this.initialized && this.worldObj != null)
+        if (!this.initialized && this.world != null)
         {
-            this.canRain = this.worldObj.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.worldObj.getBiomeProvider()).getRainfall() > 0;
-            this.noSunlight = this.worldObj.provider.getHasNoSky();
+            this.canRain = this.world.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.world.getBiomeProvider()).getRainfall() > 0;
+            this.noSunlight = this.world.provider.getHasNoSky();
             this.initialized = true;
         }
 
@@ -101,9 +109,9 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
 
     private void updateSunState()
     {
-        boolean isRaining = this.canRain && (this.worldObj.isRaining() || this.worldObj.isThundering());
+        boolean isRaining = this.canRain && (this.world.isRaining() || this.world.isThundering());
 
-        this.theSunIsVisible = this.worldObj.isDaytime() && !isRaining && this.worldObj.canSeeSky(this.pos.up());
+        this.theSunIsVisible = this.world.isDaytime() && !isRaining && this.world.canSeeSky(this.pos.up());
     }
 
     private int generateEnergy()
@@ -184,14 +192,14 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
-        if (this.worldObj == null)
+        if (this.world == null)
         {
             return true;
         }
 
-        if (this.worldObj.getTileEntity(this.pos) != this)
+        if (this.world.getTileEntity(this.pos) != this)
         {
             return false;
         }
