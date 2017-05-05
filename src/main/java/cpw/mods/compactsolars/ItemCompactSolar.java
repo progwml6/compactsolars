@@ -33,7 +33,7 @@ public class ItemCompactSolar extends ItemColored
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
         tooltip.add(I18n.translateToLocal(
-                I18n.translateToLocalFormatted("tile.compactsolars.powertier.tooltip", CompactSolarType.values()[stack.getItemDamage()].ordinal() + 1).trim())
+                I18n.translateToLocalFormatted("tile.compactsolars:powertier.tooltip", CompactSolarType.values()[stack.getItemDamage()].ordinal() + 1).trim())
                 .trim());
     }
 

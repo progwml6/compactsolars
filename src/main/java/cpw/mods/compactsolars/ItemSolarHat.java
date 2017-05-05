@@ -26,12 +26,16 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
     private class PlayerState
     {
         boolean canRain;
+
         public long buildUp;
+
         public long lastTick;
     }
 
     private static Random random = new Random();
+
     private static Map<EntityPlayer, PlayerState> playerState = new MapMaker().weakKeys().makeMap();
+
     private CompactSolarType type;
 
     public ItemSolarHat(CompactSolarType type)
@@ -97,7 +101,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
                 continue;
             }
 
-            if (stack != ItemStack.EMPTY)
+            if (stack != null)
             {
                 if (stack.getItem() instanceof IElectricItem)
                 {

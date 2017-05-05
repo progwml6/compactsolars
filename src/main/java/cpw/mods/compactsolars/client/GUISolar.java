@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GUISolar extends GuiContainer
 {
-    public static final ResourceLocation gui = new ResourceLocation("ic2", "textures/gui/GUISolarGenerator.png");
+    public static final ResourceLocation gui = new ResourceLocation("compactsolars", "textures/gui/GUISolarGenerator.png");
 
     public enum GUI
     {
@@ -54,6 +54,7 @@ public class GUISolar extends GuiContainer
     }
 
     private GUI type;
+
     private ContainerCompactSolar container;
 
     private GUISolar(GUI type, IInventory playerInventory, TileEntityCompactSolar solarTile)

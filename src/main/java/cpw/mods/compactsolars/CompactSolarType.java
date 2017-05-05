@@ -29,14 +29,23 @@ public enum CompactSolarType implements IStringSerializable
     //@formatter:on
 
     private int output;
+
     public Class<? extends TileEntityCompactSolar> clazz;
+
     public String friendlyName;
+
     public String transformerName;
+
     public final ResourceLocation hatTexture;
+
     public final String hatName;
+
     private ItemSolarHat item;
+
     public final ResourceLocation hatItemTexture;
+
     public final int outputPacketSize;
+
     public final int maxStorage;
 
     //@formatter:off

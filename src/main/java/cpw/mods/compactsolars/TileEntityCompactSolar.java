@@ -16,7 +16,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import ic2.api.energy.prefab.BasicSource;
+import ic2.api.energy.prefab.BasicEnergyTe.Source;
+import ic2.api.info.Info;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.state.IBlockState;
@@ -36,16 +37,22 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable
+public class TileEntityCompactSolar extends Source implements ITickable, IInventory, IWrenchable
 {
-    private BasicSource energySource;
     private static Random random = new Random();
+
     private CompactSolarType type;
+
     private NonNullList<ItemStack> inventory;
+
     private boolean initialized;
+
     public boolean theSunIsVisible;
+
     private int tick;
+
     private boolean canRain;
+
     private boolean noSunlight;
 
     public TileEntityCompactSolar()
@@ -55,18 +62,15 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
 
     public TileEntityCompactSolar(CompactSolarType type)
     {
-        super();
+        super(type.maxStorage, type.ordinal() + 1);
         this.type = type;
         this.inventory = NonNullList.<ItemStack> withSize(1, ItemStack.EMPTY);
         this.tick = random.nextInt(64);
-        this.energySource = new BasicSource(this, type.maxStorage, type.ordinal() + 1);
     }
 
     @Override
     public void update()
     {
-        // this.energySource.update();
-
         if (!this.initialized && this.world != null)
         {
             this.canRain = this.world.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.world.getBiomeProvider()).getRainfall() > 0;
@@ -92,13 +96,13 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
             energyProduction = this.generateEnergy();
         }
 
-        this.energySource.addEnergy(energyProduction);
+        this.getEnergyBuffer().addEnergy(energyProduction);
 
-        if (this.inventory.get(0) != ItemStack.EMPTY && (this.inventory.get(0).getItem() instanceof IElectricItem))
+        if (!this.inventory.get(0).isEmpty() && (this.inventory.get(0).getItem() instanceof IElectricItem))
         {
-            this.energySource.charge(this.inventory.get(0));
+            System.out.println(!Info.isIc2Available() || getWorld().isRemote);
+            this.getEnergyBuffer().charge(this.inventory.get(0));
         }
-
     }
 
     private void updateSunState()
@@ -133,7 +137,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
-        if (this.inventory.get(index) != ItemStack.EMPTY)
+        if (!this.inventory.get(index).isEmpty())
         {
             if (this.inventory.get(index).getCount() <= count)
             {
@@ -165,7 +169,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     {
         this.inventory.set(index, stack);
 
-        if (stack != ItemStack.EMPTY && stack.getCount() > this.getInventoryStackLimit())
+        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
         {
             stack.setCount(this.getInventoryStackLimit());
         }
@@ -235,34 +239,40 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        super.writeToNBT(compound);
         NBTTagList tagList = new NBTTagList();
+
         for (int slot = 0; slot < this.inventory.size(); slot++)
         {
-            if (this.inventory.get(slot) != ItemStack.EMPTY)
+            if (!this.inventory.get(slot).isEmpty())
             {
                 NBTTagCompound itemCompound = new NBTTagCompound();
+
                 itemCompound.setByte("Slot", (byte) slot);
+
                 this.inventory.get(slot).writeToNBT(itemCompound);
+
                 tagList.appendTag(itemCompound);
             }
         }
 
         compound.setTag("Items", tagList);
-        return this.energySource.writeToNBT(compound);
+
+        return super.writeToNBT(compound);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        this.energySource.readFromNBT(compound);
+
         NBTTagList tagList = compound.getTagList("Items", Constants.NBT.TAG_LIST);
         this.inventory = NonNullList.<ItemStack> withSize(this.getSizeInventory(), ItemStack.EMPTY);
+
         for (int itemCount = 0; itemCount < tagList.tagCount(); itemCount++)
         {
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(itemCount);
             int slot = itemCompound.getByte("Slot") & 0xff;
+
             if (slot >= 0 && slot < this.inventory.size())
             {
                 this.inventory.set(slot, new ItemStack(itemCompound));
@@ -276,25 +286,14 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     }
 
     @Override
-    public void onChunkUnload()
-    {
-        this.energySource.onChunkUnload();
-    }
-
-    @Override
-    public void invalidate()
-    {
-        this.energySource.invalidate();
-        super.invalidate();
-    }
-
-    @Override
     public ItemStack removeStackFromSlot(int index)
     {
-        if (this.inventory.get(index) != ItemStack.EMPTY)
+        if (!this.inventory.get(index).isEmpty())
         {
             ItemStack stack = this.inventory.get(index);
+
             this.inventory.set(index, ItemStack.EMPTY);
+
             return stack;
         }
         else
@@ -327,7 +326,7 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return stack != ItemStack.EMPTY && stack.getItem() instanceof IElectricItem;
+        return !stack.isEmpty() && stack.getItem() instanceof IElectricItem;
     }
 
     @Override

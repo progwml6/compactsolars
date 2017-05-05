@@ -27,14 +27,18 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[13.19.0.2153,)") // ;required-after:IC2@[2.2,)")
+@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[13.19.0.2153,);required-after:ic2@[2.7,)")
 public class CompactSolars
 {
     @SidedProxy(clientSide = "cpw.mods.compactsolars.client.ClientProxy", serverSide = "cpw.mods.compactsolars.CommonProxy")
     public static CommonProxy proxy;
+
     public static BlockCompactSolar compactSolarBlock;
+
     public static ItemCompactSolar compactSolarItemBlock;
+
     public static int productionRate = 1;
+
     @Instance("compactsolars")
     public static CompactSolars instance;
 

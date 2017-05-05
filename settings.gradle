@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'compactsolars'
+rootProject.name = 'CompactSolars-1.11'
