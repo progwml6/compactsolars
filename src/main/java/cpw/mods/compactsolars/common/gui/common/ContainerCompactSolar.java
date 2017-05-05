@@ -8,10 +8,13 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.common.gui.common;
 
 import java.util.List;
 
+import cpw.mods.compactsolars.common.CompactSolarType;
+import cpw.mods.compactsolars.common.gui.slot.SlotCharging;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolar;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -34,12 +37,14 @@ public class ContainerCompactSolar extends Container
     {
         this.tile = solarInventoryIn;
         this.myPlayer = ((InventoryPlayer) playerInventory).player;
+
         this.layoutContainer(playerInventory, solarInventoryIn, type);
     }
 
     private void layoutContainer(IInventory playerInventory, IInventory solarInventoryIn, CompactSolarType type)
     {
-        this.addSlotToContainer(new Slot(solarInventoryIn, 0, 80, 26));
+        this.addSlotToContainer(new SlotCharging(solarInventoryIn, 0, 80, 26, this.tile.getType().ordinal() + 1));
+
         for (int inventoryRow = 0; inventoryRow < 3; inventoryRow++)
         {
             for (int inventoryColumn = 0; inventoryColumn < 9; inventoryColumn++)

@@ -12,6 +12,13 @@ package cpw.mods.compactsolars;
 
 import org.apache.logging.log4j.Level;
 
+import cpw.mods.compactsolars.blocks.BlockCompactSolar;
+import cpw.mods.compactsolars.common.CommonProxy;
+import cpw.mods.compactsolars.common.CompactSolarType;
+import cpw.mods.compactsolars.common.gui.GuiHandler;
+import cpw.mods.compactsolars.common.version.Version;
+import cpw.mods.compactsolars.items.ItemCompactSolar;
+import cpw.mods.compactsolars.items.ItemSolarHat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -30,7 +37,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:Forge@[12.17.0.1940,);required-after:IC2@[2.2,)")
 public class CompactSolars
 {
-    @SidedProxy(clientSide = "cpw.mods.compactsolars.client.ClientProxy", serverSide = "cpw.mods.compactsolars.CommonProxy")
+    @SidedProxy(clientSide = "cpw.mods.compactsolars.common.ClientProxy", serverSide = "cpw.mods.compactsolars.common.CommonProxy")
     public static CommonProxy proxy;
 
     public static BlockCompactSolar compactSolarBlock;
@@ -46,22 +53,29 @@ public class CompactSolars
     public void preInit(FMLPreInitializationEvent preinit)
     {
         Version.init(preinit.getVersionProperties());
+
         preinit.getModMetadata().version = Version.version();
+
         Configuration cfg = new Configuration(preinit.getSuggestedConfigurationFile());
+
         try
         {
             cfg.load();
+
             compactSolarBlock = new BlockCompactSolar();
             compactSolarItemBlock = new ItemCompactSolar(compactSolarBlock);
+
             CompactSolarType.buildHats();
+
             Property scale = cfg.get(Configuration.CATEGORY_GENERAL, "scaleFactor", 1);
-            scale.setComment("The EU generation scaling factor. " + "The average number of ticks needed to generate one EU packet."
-                    + "1 is every tick, 2 is every other tick etc. " + "Each Solar will still generate a whole packet (8, 64, 512 EU).");
+            scale.setComment("The EU generation scaling factor. " + "The average number of ticks needed to generate one EU packet." + "1 is every tick, 2 is every other tick etc. " + "Each Solar will still generate a whole packet (8, 64, 512 EU).");
+
             productionRate = scale.getInt(1);
         }
         catch (Exception e)
         {
             FMLLog.log(Level.ERROR, e, "CompactSolars was unable to load it's configuration successfully");
+
             throw new RuntimeException(e);
         }
         finally
@@ -89,8 +103,7 @@ public class CompactSolars
     @EventHandler
     public void init(FMLInitializationEvent init)
     {
-        proxy.registerTileEntityRenderers();
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
 
     @EventHandler

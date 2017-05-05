@@ -8,7 +8,7 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.tileentity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +16,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import cpw.mods.compactsolars.CompactSolars;
+import cpw.mods.compactsolars.common.CompactSolarType;
 import ic2.api.energy.prefab.BasicSource;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IWrenchable;
@@ -37,7 +39,7 @@ import net.minecraftforge.common.util.Constants;
 
 public class TileEntityCompactSolar extends TileEntity implements ITickable, IInventory, IWrenchable
 {
-    private BasicSource energySource;
+    private BasicSource energyBuffer;
 
     private static Random random = new Random();
 
@@ -66,13 +68,19 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         this.type = type;
         this.inventory = new ItemStack[1];
         this.tick = random.nextInt(64);
-        this.energySource = new BasicSource(this, type.maxStorage, type.ordinal() + 1);
+        this.energyBuffer = new BasicSource(this, type.maxStorage, type.ordinal() + 1);
+    }
+
+    @Override
+    public void onLoad()
+    {
+        this.energyBuffer.onLoad();
     }
 
     @Override
     public void update()
     {
-        this.energySource.update();
+        this.energyBuffer.update();
 
         if (!this.initialized && this.world != null)
         {
@@ -99,11 +107,11 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
             energyProduction = this.generateEnergy();
         }
 
-        this.energySource.addEnergy(energyProduction);
+        this.energyBuffer.addEnergy(energyProduction);
 
         if (this.inventory[0] != null && (this.inventory[0].getItem() instanceof IElectricItem))
         {
-            this.energySource.charge(this.inventory[0]);
+            this.energyBuffer.charge(this.inventory[0]);
         }
     }
 
@@ -242,33 +250,42 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
+
         NBTTagList tagList = new NBTTagList();
+
         for (int slot = 0; slot < this.inventory.length; slot++)
         {
             if (this.inventory[slot] != null)
             {
                 NBTTagCompound itemCompound = new NBTTagCompound();
+
                 itemCompound.setByte("Slot", (byte) slot);
+
                 this.inventory[slot].writeToNBT(itemCompound);
+
                 tagList.appendTag(itemCompound);
             }
         }
 
         compound.setTag("Items", tagList);
-        return this.energySource.writeToNBT(compound);
+        return this.energyBuffer.writeToNBT(compound);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        this.energySource.readFromNBT(compound);
+
+        this.energyBuffer.readFromNBT(compound);
+
         NBTTagList tagList = compound.getTagList("Items", Constants.NBT.TAG_LIST);
         this.inventory = new ItemStack[this.getSizeInventory()];
+
         for (int itemCount = 0; itemCount < tagList.tagCount(); itemCount++)
         {
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(itemCount);
             int slot = itemCompound.getByte("Slot") & 0xff;
+
             if (slot >= 0 && slot < this.inventory.length)
             {
                 this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemCompound);
@@ -284,13 +301,14 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
     @Override
     public void onChunkUnload()
     {
-        this.energySource.onChunkUnload();
+        this.energyBuffer.onChunkUnload();
     }
 
     @Override
     public void invalidate()
     {
-        this.energySource.invalidate();
+        this.energyBuffer.invalidate();
+
         super.invalidate();
     }
 
@@ -300,7 +318,9 @@ public class TileEntityCompactSolar extends TileEntity implements ITickable, IIn
         if (this.inventory[index] != null)
         {
             ItemStack stack = this.inventory[index];
+
             this.inventory[index] = null;
+
             return stack;
         }
         else

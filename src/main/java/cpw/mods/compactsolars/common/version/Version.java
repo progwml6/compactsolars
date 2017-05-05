@@ -8,7 +8,7 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.common.version;
 
 import java.util.Properties;
 
@@ -22,7 +22,7 @@ public class Version
 
     private static String build;
 
-    static void init(Properties properties)
+    public static void init(Properties properties)
     {
         if (properties != null)
         {

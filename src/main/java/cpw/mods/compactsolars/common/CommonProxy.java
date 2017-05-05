@@ -1,0 +1,26 @@
+/*******************************************************************************
+ * Copyright (c) 2012 cpw.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ * Contributors:
+ *     cpw - initial API and implementation
+ ******************************************************************************/
+package cpw.mods.compactsolars.common;
+
+import net.minecraft.item.Item;
+
+public class CommonProxy
+{
+    public void registerRenderInformation()
+    {
+        // NOOP on server
+    }
+
+    public void registerSolarHatModels(Item item)
+    {
+        // NOOP on server
+    }
+}

@@ -8,7 +8,9 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.tileentity;
+
+import cpw.mods.compactsolars.common.CompactSolarType;
 
 public class TileEntityCompactSolarMV extends TileEntityCompactSolar
 {
