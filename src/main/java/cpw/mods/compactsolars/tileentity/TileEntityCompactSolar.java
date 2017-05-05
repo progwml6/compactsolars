@@ -8,7 +8,7 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.tileentity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +16,9 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import cpw.mods.compactsolars.CompactSolars;
+import cpw.mods.compactsolars.common.CompactSolarType;
 import ic2.api.energy.prefab.BasicEnergyTe.Source;
-import ic2.api.info.Info;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.state.IBlockState;
@@ -100,7 +101,6 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
 
         if (!this.inventory.get(0).isEmpty() && (this.inventory.get(0).getItem() instanceof IElectricItem))
         {
-            System.out.println(!Info.isIc2Available() || getWorld().isRemote);
             this.getEnergyBuffer().charge(this.inventory.get(0));
         }
     }

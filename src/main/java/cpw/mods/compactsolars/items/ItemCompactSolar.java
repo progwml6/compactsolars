@@ -8,10 +8,11 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.items;
 
 import java.util.List;
 
+import cpw.mods.compactsolars.common.CompactSolarType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemColored;

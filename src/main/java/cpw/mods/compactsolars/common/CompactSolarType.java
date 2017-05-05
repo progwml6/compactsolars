@@ -8,10 +8,16 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.common;
 
 import com.google.common.base.Throwables;
 
+import cpw.mods.compactsolars.CompactSolars;
+import cpw.mods.compactsolars.blocks.BlockCompactSolar;
+import cpw.mods.compactsolars.items.ItemSolarHat;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolar;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolarHV;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolarMV;
 import ic2.api.item.IC2Items;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;

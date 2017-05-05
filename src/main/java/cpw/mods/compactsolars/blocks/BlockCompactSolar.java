@@ -8,10 +8,13 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.blocks;
 
 import java.util.Random;
 
+import cpw.mods.compactsolars.CompactSolars;
+import cpw.mods.compactsolars.common.CompactSolarType;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolar;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;

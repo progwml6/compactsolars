@@ -8,13 +8,13 @@
  * Contributors:
  *     cpw - initial API and implementation
  ******************************************************************************/
-package cpw.mods.compactsolars.client;
+package cpw.mods.compactsolars.common.gui.client;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.compactsolars.CompactSolarType;
-import cpw.mods.compactsolars.ContainerCompactSolar;
-import cpw.mods.compactsolars.TileEntityCompactSolar;
+import cpw.mods.compactsolars.common.CompactSolarType;
+import cpw.mods.compactsolars.common.gui.common.ContainerCompactSolar;
+import cpw.mods.compactsolars.tileentity.TileEntityCompactSolar;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -60,6 +60,7 @@ public class GUISolar extends GuiContainer
     private GUISolar(GUI type, IInventory playerInventory, TileEntityCompactSolar solarTile)
     {
         super(type.makeContainer(playerInventory, solarTile));
+
         this.container = (ContainerCompactSolar) this.inventorySlots;
         this.type = type;
         this.allowUserInput = false;
@@ -76,10 +77,12 @@ public class GUISolar extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
         this.mc.renderEngine.bindTexture(gui);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+
         if (this.container.tile.theSunIsVisible)
         {
             this.drawTexturedModalRect(x + 80, y + 45, 176, 0, 14, 14);

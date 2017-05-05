@@ -1,4 +1,4 @@
-package cpw.mods.compactsolars;
+package cpw.mods.compactsolars.items;
 
 import java.util.Map;
 import java.util.Random;
@@ -6,6 +6,8 @@ import java.util.Random;
 import com.google.common.collect.MapMaker;
 import com.google.common.math.IntMath;
 
+import cpw.mods.compactsolars.CompactSolars;
+import cpw.mods.compactsolars.common.CompactSolarType;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import net.minecraft.entity.Entity;
