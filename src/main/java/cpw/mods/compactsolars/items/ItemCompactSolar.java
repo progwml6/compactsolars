@@ -14,14 +14,14 @@ import java.util.List;
 
 import cpw.mods.compactsolars.common.CompactSolarType;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public class ItemCompactSolar extends ItemColored
 {
     public ItemCompactSolar(Block b)
@@ -31,11 +31,9 @@ public class ItemCompactSolar extends ItemColored
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag)
     {
-        tooltip.add(I18n.translateToLocal(
-                I18n.translateToLocalFormatted("tile.compactsolars:powertier.tooltip", CompactSolarType.values()[stack.getItemDamage()].ordinal() + 1).trim())
-                .trim());
+        tooltip.add(I18n.format("tile.compactsolars:powertier.tooltip", CompactSolarType.values()[stack.getItemDamage()].ordinal() + 1).trim());
     }
 
     @Override

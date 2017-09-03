@@ -14,11 +14,6 @@ import net.minecraft.item.Item;
 
 public class CommonProxy
 {
-    public void registerRenderInformation()
-    {
-        // NOOP on server
-    }
-
     public void registerSolarHatModels(Item item)
     {
         // NOOP on server

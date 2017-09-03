@@ -57,7 +57,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
     public void onArmorTick(World worldObj, EntityPlayer player, ItemStack itemStack)
     {
         // client side or no sky: no charge
-        if (worldObj.isRemote || worldObj.provider.hasNoSky())
+        if (worldObj.isRemote || worldObj.provider.isNether())
         {
             return;
         }

@@ -67,10 +67,18 @@ public class GUISolar extends GuiContainer
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRendererObj.drawString(this.type.mainType.friendlyName, 8, 6, 0x404040);
-        this.fontRendererObj.drawString("Inventory", 8, (this.ySize - 96) + 2, 0x404040);
+        this.fontRenderer.drawString(this.type.mainType.friendlyName, 8, 6, 0x404040);
+        this.fontRenderer.drawString("Inventory", 8, (this.ySize - 96) + 2, 0x404040);
     }
 
     @Override
