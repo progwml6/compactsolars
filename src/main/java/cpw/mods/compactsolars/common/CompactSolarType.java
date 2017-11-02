@@ -19,6 +19,7 @@ import cpw.mods.compactsolars.tileentity.TileEntityCompactSolar;
 import cpw.mods.compactsolars.tileentity.TileEntityCompactSolarHV;
 import cpw.mods.compactsolars.tileentity.TileEntityCompactSolarMV;
 import ic2.api.item.IC2Items;
+import ic2.api.recipe.Recipes;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -89,7 +90,7 @@ public enum CompactSolarType implements IStringSerializable
 
     private static void addRecipe(ItemStack target, Object... args)
     {
-        GameRegistry.addRecipe(target, args);
+        Recipes.advRecipes.addRecipe(target, args);
     }
 
     public int getOutput()
@@ -127,16 +128,13 @@ public enum CompactSolarType implements IStringSerializable
         this.item.setUnlocalizedName("compactsolars:" + this.hatName);
         this.item.setRegistryName(new ResourceLocation("compactsolars", this.hatName));
 
-        GameRegistry.register(this.item);
-
         return this.item;
     }
 
-    public static void buildHats()
+    public static void registerHatModels()
     {
         for (CompactSolarType typ : values())
         {
-            typ.buildHat();
             CompactSolars.proxy.registerSolarHatModels(typ.item);
         }
     }
@@ -147,9 +145,9 @@ public enum CompactSolarType implements IStringSerializable
 
         for (CompactSolarType typ : values())
         {
-            ItemStack solarBlock = new ItemStack(block, 0, typ.ordinal());
+            ItemStack solarBlock = new ItemStack(block, 1, typ.ordinal());
 
-            GameRegistry.addShapelessRecipe(new ItemStack(typ.item), solarBlock, ironHat);
+            Recipes.advRecipes.addShapelessRecipe(new ItemStack(typ.item), solarBlock, ironHat);
         }
     }
 

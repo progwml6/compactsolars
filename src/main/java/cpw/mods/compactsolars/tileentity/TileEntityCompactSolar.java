@@ -75,7 +75,7 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
         if (!this.initialized && this.world != null)
         {
             this.canRain = this.world.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.world.getBiomeProvider()).getRainfall() > 0;
-            this.noSunlight = this.world.provider.hasNoSky();
+            this.noSunlight = this.world.provider.isNether();
             this.initialized = true;
         }
 

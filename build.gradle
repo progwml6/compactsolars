@@ -12,7 +12,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 plugins {
@@ -43,9 +43,8 @@ repositories {
 }
 
 dependencies {
-    //deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.195-ex110'
-    compile 'net.industrial-craft:industrialcraft-2:2.7.26-ex111:dev'
-    deobfCompile "mezz.jei:jei_1.11.2:4.3.4.+"
+    compile 'net.industrial-craft:industrialcraft-2:2.8.23-ex112:dev'
+    deobfCompile "mezz.jei:jei_1.12:4.7.1.+"
     //compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
@@ -56,8 +55,8 @@ archivesBaseName = "CompactSolars"
 
 // Setup the forge minecraft plugin data. Specify the preferred forge/minecraft version here
 minecraft {
-    version = "1.11.2-13.20.0.2294"
-    mappings = "snapshot_20161220"
+    version = "1.12-14.21.0.2353"
+    mappings = "snapshot_20170624"
     runDir = "run"
 }
 

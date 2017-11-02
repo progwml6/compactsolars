@@ -10,8 +10,6 @@
  ******************************************************************************/
 package cpw.mods.compactsolars;
 
-import org.apache.logging.log4j.Level;
-
 import cpw.mods.compactsolars.blocks.BlockCompactSolar;
 import cpw.mods.compactsolars.common.CommonProxy;
 import cpw.mods.compactsolars.common.CompactSolarType;
@@ -19,11 +17,14 @@ import cpw.mods.compactsolars.common.gui.GuiHandler;
 import cpw.mods.compactsolars.common.version.Version;
 import cpw.mods.compactsolars.items.ItemCompactSolar;
 import cpw.mods.compactsolars.items.ItemSolarHat;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -31,10 +32,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[13.19.0.2153,);required-after:ic2@[2.7,)")
+@EventBusSubscriber
+@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[14.21.0.2353,);required-after:ic2@[2.8,)")
 public class CompactSolars
 {
     @SidedProxy(clientSide = "cpw.mods.compactsolars.common.ClientProxy", serverSide = "cpw.mods.compactsolars.common.CommonProxy")
@@ -62,11 +65,6 @@ public class CompactSolars
         {
             cfg.load();
 
-            compactSolarBlock = new BlockCompactSolar();
-            compactSolarItemBlock = new ItemCompactSolar(compactSolarBlock);
-
-            CompactSolarType.buildHats();
-
             Property scale = cfg.get(Configuration.CATEGORY_GENERAL, "scaleFactor", 1);
             scale.setComment("The EU generation scaling factor. " + "The average number of ticks needed to generate one EU packet." + "1 is every tick, 2 is every other tick etc. " + "Each Solar will still generate a whole packet (8, 64, 512 EU).");
 
@@ -74,7 +72,7 @@ public class CompactSolars
         }
         catch (Exception e)
         {
-            FMLLog.log(Level.ERROR, e, "CompactSolars was unable to load it's configuration successfully");
+            preinit.getModLog().error("CompactSolars was unable to load it's configuration successfully", e);
 
             throw new RuntimeException(e);
         }
@@ -82,22 +80,38 @@ public class CompactSolars
         {
             cfg.save();
         }
+    }
+
+    @SubscribeEvent
+    public static void registerBlocks(Register<Block> event)
+    {
+        compactSolarBlock = new BlockCompactSolar();
 
         compactSolarBlock.setUnlocalizedName("compactsolars.compact_solar_block");
         compactSolarBlock.setRegistryName(new ResourceLocation("compactsolars", "compact_solar_block"));
 
-        compactSolarItemBlock.setUnlocalizedName("compactsolars.compact_solar_block");
-        compactSolarItemBlock.setRegistryName(new ResourceLocation("compactsolars", "compact_solar_block"));
-
-        GameRegistry.register(compactSolarBlock);
-        GameRegistry.register(compactSolarItemBlock);
+        event.getRegistry().register(compactSolarBlock);
 
         for (CompactSolarType typ : CompactSolarType.values())
         {
             GameRegistry.registerTileEntity(typ.clazz, typ.tileEntityName());
         }
+    }
 
-        proxy.registerRenderInformation();
+    @SubscribeEvent
+    public static void registerItems(Register<Item> event)
+    {
+        compactSolarItemBlock = new ItemCompactSolar(compactSolarBlock);
+
+        compactSolarItemBlock.setUnlocalizedName(compactSolarBlock.getUnlocalizedName());
+        compactSolarItemBlock.setRegistryName(compactSolarBlock.getRegistryName());
+
+        event.getRegistry().register(compactSolarItemBlock);
+
+        for (CompactSolarType typ : CompactSolarType.values())
+        {
+            event.getRegistry().register(typ.buildHat());
+        }
     }
 
     @EventHandler

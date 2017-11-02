@@ -24,7 +24,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -33,8 +32,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockCompactSolar extends BlockContainer
 {
@@ -145,7 +142,7 @@ public class BlockCompactSolar extends BlockContainer
 
                 if (itemstack.hasTagCompound())
                 {
-                    entityitem.getEntityItem().setTagCompound(itemstack.getTagCompound().copy());
+                    entityitem.getItem().setTagCompound(itemstack.getTagCompound().copy());
                 }
 
                 world.spawnEntity(entityitem);
@@ -154,8 +151,7 @@ public class BlockCompactSolar extends BlockContainer
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (CompactSolarType type : CompactSolarType.values())
         {

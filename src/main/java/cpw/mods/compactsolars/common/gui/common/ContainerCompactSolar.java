@@ -71,7 +71,7 @@ public class ContainerCompactSolar extends Container
         {
             if (this.theSunIsVisible != this.tile.theSunIsVisible || !this.initialized)
             {
-                crafter.sendProgressBarUpdate(this, 0, this.tile.theSunIsVisible ? 1 : 0);
+                crafter.sendWindowProperty(this, 0, this.tile.theSunIsVisible ? 1 : 0);
             }
         }
 
