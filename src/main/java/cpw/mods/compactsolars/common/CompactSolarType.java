@@ -25,7 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public enum CompactSolarType implements IStringSerializable
 {
@@ -98,6 +97,7 @@ public enum CompactSolarType implements IStringSerializable
         return this.output;
     }
 
+    @SuppressWarnings("deprecation")
     public static TileEntityCompactSolar makeEntity(int metadata)
     {
         try

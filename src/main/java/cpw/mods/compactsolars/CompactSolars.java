@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @EventBusSubscriber
-@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[14.21.0.2353,);required-after:ic2@[2.8,)")
+@Mod(modid = "compactsolars", name = "Compact Solar Arrays", dependencies = "required-after:forge@[14.23.0.2491,);required-after:ic2@[2.8,)")
 public class CompactSolars
 {
     @SidedProxy(clientSide = "cpw.mods.compactsolars.common.ClientProxy", serverSide = "cpw.mods.compactsolars.common.CommonProxy")
