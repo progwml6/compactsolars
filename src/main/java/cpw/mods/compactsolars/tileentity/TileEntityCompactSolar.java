@@ -35,7 +35,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
 
 public class TileEntityCompactSolar extends Source implements ITickable, IInventory, IWrenchable
@@ -51,8 +53,6 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
     public boolean theSunIsVisible;
 
     private int tick;
-
-    private boolean canRain;
 
     private boolean noSunlight;
 
@@ -74,7 +74,6 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
     {
         if (!this.initialized && this.world != null)
         {
-            this.canRain = this.world.getChunkFromBlockCoords(this.pos).getBiome(this.pos, this.world.getBiomeProvider()).getRainfall() > 0;
             this.noSunlight = this.world.provider.isNether();
             this.initialized = true;
         }
@@ -107,9 +106,27 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
 
     private void updateSunState()
     {
-        boolean isRaining = this.canRain && (this.world.isRaining() || this.world.isThundering());
+        this.theSunIsVisible = getSkyLight(this.getWorld(), this.pos.up()) > 0.0F;
+    }
 
-        this.theSunIsVisible = this.world.isDaytime() && !isRaining && this.world.canSeeSky(this.pos.up());
+    public static float getSkyLight(World world, BlockPos pos)
+    {
+        if (world.provider.isNether())
+        {
+            return 0.0F;
+        }
+
+        float sunBrightness = limit((float) Math.cos(world.getCelestialAngleRadians(1.0F)) * 2.0F + 0.2F, 0.0F, 1.0F);
+
+        if (!BiomeDictionary.hasType(world.getBiome(pos), BiomeDictionary.Type.SANDY))
+        {
+            sunBrightness *= (1.0F - world.getRainStrength(1.0F) * 5.0F / 16.0F);
+            sunBrightness *= (1.0F - world.getThunderStrength(1.0F) * 5.0F / 16.0F);
+
+            sunBrightness = limit(sunBrightness, 0.0F, 1.0F);
+        }
+
+        return world.getLightFor(EnumSkyBlock.SKY, pos) / 15.0F * sunBrightness;
     }
 
     private int generateEnergy()
@@ -364,5 +381,20 @@ public class TileEntityCompactSolar extends Source implements ITickable, IInvent
         }
 
         return true;
+    }
+
+    public static float limit(float value, float min, float max)
+    {
+        if ((Float.isNaN(value)) || (value <= min))
+        {
+            return min;
+        }
+
+        if (value >= max)
+        {
+            return max;
+        }
+
+        return value;
     }
 }
