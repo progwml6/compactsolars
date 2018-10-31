@@ -1,5 +1,6 @@
 package cpw.mods.compactsolars.items;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -10,6 +11,8 @@ import cpw.mods.compactsolars.CompactSolars;
 import cpw.mods.compactsolars.common.CompactSolarType;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +25,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemSolarHat extends ItemArmor implements ISpecialArmor
 {
@@ -42,15 +47,22 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
 
     public ItemSolarHat(CompactSolarType type)
     {
-        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1, null, 0.0F), 0,
-                EntityEquipmentSlot.HEAD);
+        super(EnumHelper.addArmorMaterial("COMPACTSOLARHAT", type.hatTexture.toString(), 1, new int[] { 1, 1, 1, 1 }, 1, null, 0.0F), 0, EntityEquipmentSlot.HEAD);
         this.type = type;
+        this.setMaxDamage(0);
     }
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
     {
         return this.type.hatTexture.toString();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag)
+    {
+        tooltip.add(I18n.format("tile.compactsolars:powertier.tooltip", this.type.ordinal() + 1));
     }
 
     @Override
@@ -103,11 +115,11 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
                 continue;
             }
 
-            if (stack != null)
+            if (stack != ItemStack.EMPTY)
             {
                 if (stack.getItem() instanceof IElectricItem)
                 {
-                    available -= ElectricItem.manager.charge(stack, available, this.type.ordinal() + 1, false, false);
+                    available -= ElectricItem.manager.charge(stack, available, this.type.ordinal() + 1, true, false);
                 }
             }
         }
@@ -128,6 +140,7 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
         if (state.buildUp > dose)
         {
             player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, dose >> 2, 0));
+
             state.buildUp -= dose;
         }
     }
@@ -154,4 +167,5 @@ public class ItemSolarHat extends ItemArmor implements ISpecialArmor
     {
         return;
     }
+
 }
